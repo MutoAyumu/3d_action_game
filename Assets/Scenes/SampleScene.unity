@@ -345,7 +345,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d66496e4c81fbf439606276d6d674f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _branch: []
+  _branch:
+  - BranchConditionals: []
+  - BranchConditionals:
+    - rid: -2
+    - rid: -2
+  - BranchConditionals:
+    - rid: 6534127581000630272
+    - rid: 6534127581000630273
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 6534127581000630272
+      type: {class: Test, ns: , asm: Assembly-CSharp}
+    - rid: 6534127581000630273
+      type: {class: Test, ns: , asm: Assembly-CSharp}
