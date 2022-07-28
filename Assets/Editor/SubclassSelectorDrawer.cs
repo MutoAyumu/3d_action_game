@@ -25,7 +25,7 @@ public class SubclassSelectorDrawer : PropertyDrawer
         GetCurrentTypeIndex(property.managedReferenceFullTypename);
         int selectedTypeIndex = EditorGUI.Popup(GetPopupPosition(position), currentTypeIndex, typePopupNameArray);
         UpdatePropertyToSelectedTypeIndex(property, selectedTypeIndex);
-        EditorGUI.PropertyField(position,property, label, true);
+        EditorGUI.PropertyField(position, property, label, true);
     }
 
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
