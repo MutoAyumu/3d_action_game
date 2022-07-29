@@ -1,11 +1,10 @@
 using UnityEngine;
 
-/// <summary>
-/// StatePattern‚ÌŠî’êƒNƒ‰ƒX
-/// </summary>
-public class StatePatternBase : MonoBehaviour
+partial class PlayerController
 {
-    protected StateBase _currentState;
+    static readonly PlayerMoveState _moveState = new PlayerMoveState();
+
+    StateBase _currentState = _moveState;
 
     private void Start()
     {
@@ -17,9 +16,6 @@ public class StatePatternBase : MonoBehaviour
         OnUpdate();
         _currentState.OnUpdate(this);
     }
-
-    protected virtual void OnStart() { }
-    protected virtual void OnUpdate() { }
 
     /// <summary>
     /// State‚ÌØ‚è‘Ö‚¦‚ğ‚·‚é

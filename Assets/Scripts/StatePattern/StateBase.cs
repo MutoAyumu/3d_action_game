@@ -5,9 +5,11 @@ using UnityEngine;
 /// </summary>
 public abstract class StateBase
 {
-    public virtual void OnEnter(StatePatternBase model, StateBase state) { }
+    public virtual void OnSetup(PlayerController player) { }
 
-    public virtual void OnUpdate(StatePatternBase model) { }
+    public virtual void OnEnter(PlayerController player, StateBase state) { }
 
-    public virtual void OnExit(StatePatternBase model, StateBase nextState) { }
+    public virtual void OnUpdate(PlayerController player) { }
+
+    public virtual void OnExit(PlayerController player, StateBase nextState) { }
 }

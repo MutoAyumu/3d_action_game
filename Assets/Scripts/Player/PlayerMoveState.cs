@@ -9,28 +9,36 @@ partial class PlayerController
     /// </summary>
     public class PlayerMoveState : StateBase
     {
-        public override void OnEnter(StatePatternBase model, StateBase state) 
+        [Header("=== MoveState ===")]
+        Rigidbody _rb;　//キャッシュ用
+
+        public override void OnSetup(PlayerController player)
+        {
+            _rb = player._rb;
+        }
+
+        public override void OnEnter(PlayerController player, StateBase state) 
         {
             
         }
 
-        public override void OnUpdate(StatePatternBase model)
+        public override void OnUpdate(PlayerController player)
         {
-            model.Move();
+            Move();
         }
 
-        public override void OnExit(StatePatternBase model, StateBase nextState)
+        public override void OnExit(PlayerController player, StateBase nextState)
         { 
         
         }
-    }
-    void Move()
-    {
-        var h = Input.GetAxisRaw("Horizontal");
-        var v = Input.GetAxisRaw("Vertical");
+        void Move()
+        {
+            var h = Input.GetAxisRaw("Horizontal");
+            var v = Input.GetAxisRaw("Vertical");
 
-        var dir = new Vector3(h, _rb.velocity.y, v);
-        dir.Normalize();
-        _rb.velocity = dir;
+            var dir = new Vector3(h, _rb.velocity.y, v);
+            dir.Normalize();
+            _rb.velocity = dir;
+        }
     }
 }
