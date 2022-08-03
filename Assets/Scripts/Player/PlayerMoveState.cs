@@ -4,19 +4,15 @@ using UnityEngine;
 
 partial class PlayerController
 {
+    [Header("=== MoveState ===")]
+    [SerializeField, Tooltip("移動スピード")] float _moveSpeed = 5f;
+    [SerializeField, Tooltip("回転の滑らかさ")] float _rotationSpeed = 5f;
+
     /// <summary>
     /// 移動系のStateクラス
     /// </summary>
     public class PlayerMoveState : StateBase
     {
-        [Header("=== MoveState ===")]
-        Rigidbody _rb;　//キャッシュ用
-
-        public override void OnSetup(PlayerController player)
-        {
-            _rb = player._rb;
-        }
-
         public override void OnEnter(PlayerController player, StateBase state) 
         {
             
@@ -24,21 +20,36 @@ partial class PlayerController
 
         public override void OnUpdate(PlayerController player)
         {
-            Move();
+            Move(player);
         }
 
         public override void OnExit(PlayerController player, StateBase nextState)
         { 
         
         }
-        void Move()
+        void Move(PlayerController player)
         {
+            //入力
             var h = Input.GetAxisRaw("Horizontal");
             var v = Input.GetAxisRaw("Vertical");
 
-            var dir = new Vector3(h, _rb.velocity.y, v);
+            //移動ベクトルを作成
+            var dir = new Vector3(h, 0, v);
+
+            if(dir != Vector3.zero)
+            {
+                dir = Camera.main.transform.TransformDirection(dir);    // カメラのローカル座標に変換する
+                dir.y = 0;  // y 軸方向はゼロにして水平方向のベクトルにする
+
+                // 入力方向に滑らかに回転させる
+                Quaternion targetRotation = Quaternion.LookRotation(dir);
+                player.transform.rotation = Quaternion.Slerp(player.transform.rotation, targetRotation, Time.deltaTime * player._rotationSpeed);
+            }
+
             dir.Normalize();
-            _rb.velocity = dir;
+            dir *= player._moveSpeed;
+            dir.y = player._rb.velocity.y;
+            player._rb.velocity = dir;
         }
     }
 }

@@ -5,8 +5,6 @@ using UnityEngine;
 /// </summary>
 public abstract class StateBase
 {
-    public virtual void OnSetup(PlayerController player) { }
-
     public virtual void OnEnter(PlayerController player, StateBase state) { }
 
     public virtual void OnUpdate(PlayerController player) { }
