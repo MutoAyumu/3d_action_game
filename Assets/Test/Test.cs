@@ -3,23 +3,27 @@ using UnityEngine;
 
 public class Test : MonoBehaviour
 {
-	[Header("Gizmoで描画する推台の設定")]
-    [SerializeField] float fov = 45f;
-    [SerializeField] float maxRange = 100f;
-    [SerializeField] float minRange = 0.3f;
-    [SerializeField] float aspect = 1.78f;
+	[Header("作成するカメラの設定")]
+    [SerializeField] float _fov = 45f;
+    [SerializeField] float _maxRange = 100f;
+    [SerializeField, Tooltip("メインカメラのDepthより小さい値")] int _depth = -2;
 
-    [SerializeField] MeshCollider _collider;
+    string _name = "Prism";
 
-	[Header("メッシュの各頂点")]
-	[SerializeField] Vector3 _frontTopRight = new Vector3(1, 1, 0);
-	[SerializeField] Vector3 _frontTopLeft = new Vector3(0, 1, 0);
-	[SerializeField] Vector3 _frontDownRight = new Vector3(1, 0, 0);
-	[SerializeField] Vector3 _frontDownLeft = new Vector3(0, 0, 0);
-	[SerializeField] Vector3 _backTopRight = new Vector3(1, 1, 1);
-	[SerializeField] Vector3 _backTopLeft = new Vector3(0, 1, 1);
-	[SerializeField] Vector3 _backDownRight = new Vector3(1, 0, 1);
-	[SerializeField] Vector3 _backDownLeft = new Vector3(0, 0, 1);
+    [SerializeField] Canvas _canvas;
+    readonly float _planeDistance = 1;
+
+    [SerializeField] RectTransform _areaImage;
+
+    [Header("メッシュの各頂点")]
+	[SerializeField, Clamp01Vector] Vector2 _frontTopRight = new Vector2(1, 1);
+	[SerializeField, Clamp01Vector] Vector2 _frontTopLeft = new Vector2(0, 1);
+	[SerializeField, Clamp01Vector] Vector2 _frontDownRight = new Vector2(1, 0);
+	[SerializeField, Clamp01Vector] Vector2 _frontDownLeft = new Vector2(0, 0);
+	[SerializeField, Clamp01Vector] Vector2 _backTopRight = new Vector2(1, 1);
+	[SerializeField, Clamp01Vector] Vector2 _backTopLeft = new Vector2(0, 1);
+	[SerializeField, Clamp01Vector] Vector2 _backDownRight = new Vector2(1, 0);
+	[SerializeField, Clamp01Vector] Vector2 _backDownLeft = new Vector2(0, 0);
 
 
 	private void Start()
@@ -27,9 +31,33 @@ public class Test : MonoBehaviour
         CreateMesh();
     }
 
+    void SetupCanvas(Camera cam)
+    {
+        if (!_canvas) return;
+
+        _canvas.renderMode = RenderMode.ScreenSpaceCamera;
+        _canvas.worldCamera = cam;
+        _canvas.planeDistance = _planeDistance;
+    }
+
+    Camera CreateCamera()
+    {
+        var go = new GameObject();
+        var cam = go.AddComponent<Camera>();
+
+        cam.transform.SetParent(Camera.main.transform);
+        cam.gameObject.name = _name;
+        cam.depth = _depth;
+        cam.fieldOfView = _fov;
+
+        return cam;
+    }
+
     private void CreateMesh()
     {
-        var center = Camera.main.transform.position;
+        var cam = CreateCamera();
+
+        SetupCanvas(cam);
 
         Vector3[] vertices = {
             _frontDownLeft,
@@ -44,7 +72,16 @@ public class Test : MonoBehaviour
 
         for(int i = 0; i < 8; i++)
         {
-            vertices[i] += center;
+            var vec = vertices[i];
+
+            if (i > 3)
+            {
+                vec.z += _maxRange;
+            }
+
+            vec = cam.ViewportToWorldPoint(vec);
+
+            vertices[i] = vec;
         }
 
         int[] triangles = {
@@ -63,12 +100,19 @@ public class Test : MonoBehaviour
         };
 
         Mesh mesh = new Mesh();
+        mesh.name = _name;
         mesh.vertices = vertices;
         mesh.triangles = triangles;
         mesh.Optimize();
         mesh.RecalculateNormals();
 
-        _collider.sharedMesh = mesh;
+        cam.transform.position = Camera.main.transform.position;
+
+        var col = cam.gameObject.AddComponent<MeshCollider>();
+        col.convex = true;
+        col.isTrigger = true;
+
+        col.sharedMesh = mesh;
     }
 
     private void Update()
@@ -77,7 +121,7 @@ public class Test : MonoBehaviour
     }
     //void OnDrawGizmos()
     //{
-    //    Gizmos.color = Color.green;
+    //    Gizmos.color = Color.red;
 
     //    Vector3 center = Camera.main.transform.position;
 
