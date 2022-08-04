@@ -75,18 +75,18 @@ public class Test : MonoBehaviour
     {
 
     }
-    void OnDrawGizmos()
-    {
-        Gizmos.color = Color.green;
+    //void OnDrawGizmos()
+    //{
+    //    Gizmos.color = Color.green;
 
-        Vector3 center = Camera.main.transform.position;
+    //    Vector3 center = Camera.main.transform.position;
 
-        var cache = Gizmos.matrix;
-        Gizmos.matrix = Matrix4x4.TRS(center, Camera.main.transform.rotation, transform.lossyScale);
+    //    var cache = Gizmos.matrix;
+    //    Gizmos.matrix = Matrix4x4.TRS(center, Camera.main.transform.rotation, transform.lossyScale);
 
-        //êçë‰Çï`âÊ
-        Gizmos.DrawFrustum(Vector3.zero, fov, maxRange, minRange, aspect);
+    //    //êçë‰Çï`âÊ
+    //    Gizmos.DrawFrustum(Vector3.zero, fov, maxRange, minRange, aspect);
 
-        Gizmos.matrix = cache;
-    }
+    //    Gizmos.matrix = cache;
+    //}
 }
