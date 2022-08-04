@@ -6,6 +6,8 @@ public class Test : MonoBehaviour
 	[Header("作成するカメラの設定")]
     [SerializeField] float _fov = 45f;
     [SerializeField] float _maxRange = 100f;
+    [SerializeField] float _minRange = 100f;
+    [SerializeField] float _aspect = 1.78f;
     [SerializeField, Tooltip("メインカメラのDepthより小さい値")] int _depth = -2;
 
     string _name = "Prism";
@@ -119,18 +121,18 @@ public class Test : MonoBehaviour
     {
 
     }
-    //void OnDrawGizmos()
-    //{
-    //    Gizmos.color = Color.red;
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
 
-    //    Vector3 center = Camera.main.transform.position;
+        Vector3 center = Camera.main.transform.position;
 
-    //    var cache = Gizmos.matrix;
-    //    Gizmos.matrix = Matrix4x4.TRS(center, Camera.main.transform.rotation, transform.lossyScale);
+        var cache = Gizmos.matrix;
+        Gizmos.matrix = Matrix4x4.TRS(center, Camera.main.transform.rotation, transform.lossyScale);
 
-    //    //錐台を描画
-    //    Gizmos.DrawFrustum(Vector3.zero, fov, maxRange, minRange, aspect);
+        //錐台を描画
+        Gizmos.DrawFrustum(Vector3.zero, _fov, _maxRange, _minRange, _aspect);
 
-    //    Gizmos.matrix = cache;
-    //}
+        Gizmos.matrix = cache;
+    }
 }
