@@ -12,7 +12,6 @@ public class PlayerShooting : MonoBehaviour
     [SerializeField] float _maxDistance = 100;
     [SerializeField] LayerMask _mask;
 
-	//bool _isSearch;
 	Camera _mainCamera;
 
     private void Awake()
@@ -23,7 +22,6 @@ public class PlayerShooting : MonoBehaviour
 
     private void Update()
     {
-		//_isSearch = SearchArea();
 		this.transform.rotation = _mainCamera.transform.rotation;
     }
     void CreateMesh()
@@ -73,27 +71,4 @@ public class PlayerShooting : MonoBehaviour
 
 		col.sharedMesh = mesh;
 	}
-
-    //bool SearchArea()
-    //{
-    //    var center = this.transform.position;
-    //    var halfSize = new Vector3(_size.x, _size.y, _maxDistance) * 0.5f;
-
-    //    var area = Physics.BoxCastAll(center, halfSize, this.transform.forward, Camera.main.transform.rotation, _maxDistance * 0.5f, _mask);
-
-    //    if (area.Length <= 0)
-    //        return false;
-
-    //    return true;
-    //}
-    //private void OnDrawGizmos()
-    //{
-    //    Gizmos.color = _isSearch ? Color.green : Color.red;
-
-    //    Gizmos.matrix = Matrix4x4.TRS(this.transform.position, Camera.main.transform.rotation, transform.localScale);
-
-    //    var size = new Vector3(_size.x, _size.y, _maxDistance);
-
-    //    Gizmos.DrawWireCube(Vector3.forward * _maxDistance * 0.5f, size);
-    //}
 }
