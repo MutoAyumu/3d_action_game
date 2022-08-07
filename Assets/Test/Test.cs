@@ -1,9 +1,10 @@
 
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Test : MonoBehaviour
 {
-	[Header("作成するカメラの設定")]
+    [Header("作成するカメラの設定")]
     [SerializeField] float _fov = 45f;
     [SerializeField] float _maxRange = 100f;
     [SerializeField, Tooltip("メインカメラのDepthより小さい値")] int _depth = -2;
@@ -11,40 +12,25 @@ public class Test : MonoBehaviour
     string _name = "Prism";
 
     [SerializeField] Canvas _canvas;
-    readonly float _planeDistance = 1;
 
     [SerializeField] RectTransform _areaImage;
 
-    [Header("メッシュの各頂点")]
-	[SerializeField, Clamp01Vector] Vector2 _frontTopRight = new Vector2(1, 1);
-	[SerializeField, Clamp01Vector] Vector2 _frontTopLeft = new Vector2(0, 1);
-	[SerializeField, Clamp01Vector] Vector2 _frontDownRight = new Vector2(1, 0);
-	[SerializeField, Clamp01Vector] Vector2 _frontDownLeft = new Vector2(0, 0);
-	[SerializeField, Clamp01Vector] Vector2 _backTopRight = new Vector2(1, 1);
-	[SerializeField, Clamp01Vector] Vector2 _backTopLeft = new Vector2(0, 1);
-	[SerializeField, Clamp01Vector] Vector2 _backDownRight = new Vector2(1, 0);
-	[SerializeField, Clamp01Vector] Vector2 _backDownLeft = new Vector2(0, 0);
+    //ToDo
+    //×スクリーン座標からメッシュを作る時の座標をとる
+    //画像のサイズをビューポートに変換してそれをワールド変換
 
-
-	private void Start()
+    private void Start()
     {
         CreateMesh();
     }
 
-    void SetupCanvas(Camera cam)
-    {
-        if (!_canvas) return;
-
-        _canvas.renderMode = RenderMode.ScreenSpaceCamera;
-        _canvas.worldCamera = cam;
-        _canvas.planeDistance = _planeDistance;
-    }
-
     Camera CreateCamera()
     {
+        //新しいカメラの作成
         var go = new GameObject();
         var cam = go.AddComponent<Camera>();
 
+        //初期設定
         cam.transform.SetParent(Camera.main.transform);
         cam.gameObject.name = _name;
         cam.depth = _depth;
@@ -57,20 +43,22 @@ public class Test : MonoBehaviour
     {
         var cam = CreateCamera();
 
-        SetupCanvas(cam);
-
         Vector3[] vertices = {
-            _frontDownLeft,
-            _frontDownRight,
-            _frontTopRight,
-            _frontTopLeft,
-            _backTopLeft,
-            _backTopRight,
-            _backDownRight,
-            _backDownLeft,
+            new Vector3 (0, 0, 0),
+            new Vector3 (1, 0, 0),
+            new Vector3 (1, 1, 0),
+            new Vector3 (0, 1, 0),
+            new Vector3 (0, 1, 1),
+            new Vector3 (1, 1, 1),
+            new Vector3 (1, 0, 1),
+            new Vector3 (0, 0, 1),
         };
 
-        for(int i = 0; i < 8; i++)
+        var rect = _areaImage.GetComponent<RectTransform>();
+        var width = rect.sizeDelta.x / 2;
+        var higth = rect.sizeDelta.y / 2;
+
+        for (int i = 0; i < 8; i++)
         {
             var vec = vertices[i];
 
@@ -114,23 +102,4 @@ public class Test : MonoBehaviour
 
         col.sharedMesh = mesh;
     }
-
-    private void Update()
-    {
-
-    }
-    //void OnDrawGizmos()
-    //{
-    //    Gizmos.color = Color.red;
-
-    //    Vector3 center = Camera.main.transform.position;
-
-    //    var cache = Gizmos.matrix;
-    //    Gizmos.matrix = Matrix4x4.TRS(center, Camera.main.transform.rotation, transform.lossyScale);
-
-    //    //錐台を描画
-    //    Gizmos.DrawFrustum(Vector3.zero, fov, maxRange, minRange, aspect);
-
-    //    Gizmos.matrix = cache;
-    //}
 }
