@@ -1,74 +1,113 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Cinemachine;
 
-/// <summary>
-/// プレイヤーに射撃をさせるクラス
-/// </summary>
 public class PlayerShooting : MonoBehaviour
 {
-    [SerializeField] Vector2 _size;
-    [SerializeField] float _maxDistance = 100;
-    [SerializeField] LayerMask _mask;
+    [SerializeField] float _maxRange = 100f;
+    string _name = "Prism";
 
-	Camera _mainCamera;
+    [SerializeField] RectTransform _areaImage;
+
+    public List<EnemyBase> _enemies = new List<EnemyBase>();
 
     private void Awake()
     {
-		CreateMesh();
-		_mainCamera = Camera.main;
+        CreateMesh();
     }
 
     private void Update()
     {
-		this.transform.rotation = _mainCamera.transform.rotation;
+
     }
-    void CreateMesh()
+
+    /// <summary>
+    /// 索敵範囲を作成する
+    /// </summary>
+    private void CreateMesh()
     {
-		var t = this.transform.position;
-		var halfX = _size.x / 2 + t.x;
-		var halfY = _size.y / 2 + t.y;
+        if (!_areaImage) return;
 
-		Vector3[] vertices = {
-			new Vector3 (-halfX, -halfY, t.z),
-			new Vector3 (halfX, -halfY, t.z),
-			new Vector3 (halfX, halfY, t.z),
-			new Vector3 (-halfX, halfY, t.z),
-			new Vector3 (-halfX, halfY, _maxDistance),
-			new Vector3 (halfX, halfY, _maxDistance),
-			new Vector3 (halfX, -halfY, _maxDistance),
-			new Vector3 (-halfX, -halfY, _maxDistance),
-		};
+        var rect = _areaImage.GetComponent<RectTransform>();
+        var width = rect.sizeDelta.x / 2;
+        var higth = rect.sizeDelta.y / 2;
 
-		int[] triangles = {
-			0, 2, 1,
-			0, 3, 2,
-			2, 3, 4,
-			2, 4, 5,
-			1, 2, 5,
-			1, 5, 6,
-			0, 7, 4,
-			0, 4, 3,
-			5, 4, 7,
-			5, 7, 6,
-			0, 6, 7,
-			0, 1, 6
-		};
+        var cam = Camera.main;
+        var Delta = cam.ScreenToViewportPoint(new Vector3(width, higth, 1));
 
-		var col = this.gameObject.AddComponent<MeshCollider>();
 
-		//メッシュの作成・最適化
-		var mesh = new Mesh();
-		mesh.vertices = vertices;
-		mesh.triangles = triangles;
-		mesh.Optimize();
-		mesh.RecalculateNormals();
+        Vector3[] vertices = {
+            new Vector3 (0, 0, 0),
+            new Vector3 (1, 0, 0),
+            new Vector3 (1, 1, 0),
+            new Vector3 (0, 1, 0),
+            new Vector3 (0.5f - Delta.x, 0.5f + Delta.y, 1),
+            new Vector3 (0.5f + Delta.x, 0.5f + Delta.y, 1),
+            new Vector3 (0.5f + Delta.x, 0.5f - Delta.y, 1),
+            new Vector3 (0.5f - Delta.x, 0.5f - Delta.y, 1),
+        };
 
-		//コライダーの初期化
-		col.convex = true;
-		col.isTrigger = true;
+        for (int i = 0; i < 8; i++)
+        {
+            var vec = vertices[i];
 
-		col.sharedMesh = mesh;
-	}
+            if (i > 3)
+            {
+                vec.z += _maxRange;
+            }
+
+            vec = cam.ViewportToWorldPoint(vec);
+
+            vertices[i] = vec - cam.transform.position;
+        }
+
+        int[] triangles = {
+            0, 2, 1,
+            0, 3, 2,
+            2, 3, 4,
+            2, 4, 5,
+            1, 2, 5,
+            1, 5, 6,
+            0, 7, 4,
+            0, 4, 3,
+            5, 4, 7,
+            5, 7, 6,
+            0, 6, 7,
+            0, 1, 6
+        };
+
+        Mesh mesh = new Mesh();
+        mesh.name = _name;
+        mesh.vertices = vertices;
+        mesh.triangles = triangles;
+        mesh.Optimize();
+        mesh.RecalculateNormals();
+
+        var col = gameObject.AddComponent<MeshCollider>();
+        col.convex = true;
+        col.isTrigger = true;
+
+        col.sharedMesh = mesh;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.TryGetComponent(out EnemyBase enemy))
+        {
+            if (!_enemies.Contains(enemy)) //敵がリスト内に格納されていなければ追加
+            {
+                _enemies.Add(enemy);
+            }
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.TryGetComponent(out EnemyBase enemy))
+        {
+            if (_enemies.Contains(enemy)) //敵がリスト内に格納されていれば削除
+            {
+                _enemies.Remove(enemy);
+            }
+        }
+    }
 }
