@@ -4,18 +4,17 @@ using UnityEngine;
 
 public class PlayerManagerAttachment : MonoBehaviour
 {
-    [SerializeField] WeaponDataBase _dataBase;
-
-    public delegate void SetupMethod();
-    SetupMethod _setup;
+    [SerializeField] WeaponDataBase _dataBase; //Resources‚©‚ç“®“I‚É“Ç‚Ýž‚Þ•û–@‚É‚·‚é‰Â”\«‚ ‚è
+    [SerializeField]string _name;
+    [SerializeField] WeaponType _type;
+    public WeaponDataBase DataBase => _dataBase;
 
     private void Awake()
     {
-        
+        PlayerManager.Instance.Setup(this);
     }
-
-    //public void SetupCallback(SetupMethod setup)
-    //{
-    //    _setup = setup;
-    //}
+    private void Start()
+    {
+        PlayerManager.Instance.CreateData(_name, _type)
+;    }
 }

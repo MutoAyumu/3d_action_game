@@ -9,9 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0866a03ab992d524eafb28889a50143d, type: 3}
-  m_Name: DataBase
+  m_Script: {fileID: 11500000, guid: d4f78d2c94f31bd46b371b8330fb96f6, type: 3}
+  m_Name: TestAR
   m_EditorClassIdentifier: 
-  _weapons:
-  - {fileID: 11400000, guid: fdb582857149e354a86c269e36f87887, type: 2}
-  - {fileID: 11400000, guid: 1f87a12b3fe639241948c4e1528c8e07, type: 2}
+  _type: 0
+  _name: TestAR
+  _maxLength: 10
+  _randomRange: {x: 1, y: 1}

@@ -10,7 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d4f78d2c94f31bd46b371b8330fb96f6, type: 3}
-  m_Name: BaseBranch
+  m_Name: TestSMG
   m_EditorClassIdentifier: 
-  _type: 0
-  _name: 
+  _type: 1
+  _name: TestSMG
+  _maxLength: 10
+  _randomRange: {x: 1, y: 1}
