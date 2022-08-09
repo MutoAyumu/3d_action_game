@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class PlayerShooting : MonoBehaviour
 {
@@ -8,6 +9,10 @@ public class PlayerShooting : MonoBehaviour
     string _name = "Prism";
 
     [SerializeField] RectTransform _areaImage;
+    [SerializeField] RectTransform _targetImage;
+
+    int _count;
+    EnemyBase _currentFocusTarget;
 
     public List<EnemyBase> _enemies = new List<EnemyBase>();
 
@@ -18,7 +23,28 @@ public class PlayerShooting : MonoBehaviour
 
     private void Update()
     {
+        if(_targetImage)
+        {
+            if(_currentFocusTarget)
+            {
 
+            }
+        }
+    }
+
+    void TargetFocus()
+    {
+        if(Input.GetKeyDown(KeyCode.K))
+        {
+            Debug.Log("ƒŠƒXƒg‚ª‹ó‚Å‚·");
+
+            if(_enemies.Count > 0)
+            {
+                _count++;
+
+                _currentFocusTarget = _enemies[_enemies.Count % _count];
+            }
+        }
     }
 
     /// <summary>

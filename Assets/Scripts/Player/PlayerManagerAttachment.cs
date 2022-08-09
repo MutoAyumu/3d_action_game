@@ -5,7 +5,9 @@ using UnityEngine;
 public class PlayerManagerAttachment : MonoBehaviour
 {
     [SerializeField] WeaponDataBase _dataBase; //Resources‚©‚ç“®“I‚É“Ç‚İ‚Ş•û–@‚É‚·‚é‰Â”\«‚ ‚è
-    [SerializeField]string _name;
+
+    [Header("Debug")]
+    [SerializeField] string _name;
     [SerializeField] WeaponType _type;
     public WeaponDataBase DataBase => _dataBase;
 
