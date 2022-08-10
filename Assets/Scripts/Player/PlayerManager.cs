@@ -27,6 +27,7 @@ public class PlayerManager
 
         if (data != null)
         {
+            Debug.Log($"{data} : [Name = {data.Name} : Type = {data.Type} : Length = {data.MaxLength} : Range = {data.Range}]");
             _modelList.Add(data);
         }
     }

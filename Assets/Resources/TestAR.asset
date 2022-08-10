@@ -15,4 +15,4 @@ MonoBehaviour:
   _type: 0
   _name: TestAR
   _maxLength: 10
-  _randomRange: {x: 1, y: 1}
+  _randomRange: {x: 1, y: 3}
