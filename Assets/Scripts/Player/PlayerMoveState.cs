@@ -21,6 +21,11 @@ partial class PlayerController
         public override void OnUpdate(PlayerController player)
         {
             Move(player);
+
+            if (Input.GetButtonDown("Jump"))
+            {
+                player.ChangeState(_jumpState);
+            }
         }
 
         public override void OnExit(PlayerController player, StateBase nextState)
@@ -41,9 +46,9 @@ partial class PlayerController
                 dir = Camera.main.transform.TransformDirection(dir);    // カメラのローカル座標に変換する
                 dir.y = 0;  // y 軸方向はゼロにして水平方向のベクトルにする
 
-                //// 入力方向に滑らかに回転させる
-                //Quaternion targetRotation = Quaternion.LookRotation(dir);
-                //player.transform.rotation = Quaternion.Slerp(player.transform.rotation, targetRotation, Time.deltaTime * player._rotationSpeed);
+                // 入力方向に滑らかに回転させる
+                Quaternion targetRotation = Quaternion.LookRotation(dir);
+                player.transform.rotation = Quaternion.Slerp(player.transform.rotation, targetRotation, Time.deltaTime * player._rotationSpeed);
             }
             //else //カメラの前方向に向かせる
             //{
@@ -54,13 +59,16 @@ partial class PlayerController
             //    player.transform.rotation = Quaternion.Slerp(player.transform.rotation, targetRotation, Time.deltaTime * player._rotationSpeed);
             //}
 
-            var vec = Camera.main.transform.forward;
-            vec.y = 0;
+            //var vec = Camera.main.transform.forward;
+            //vec.y = 0;
 
-            Quaternion targetRotation = Quaternion.LookRotation(vec);
-            player.transform.rotation = Quaternion.Slerp(player.transform.rotation, targetRotation, Time.deltaTime * player._rotationSpeed);
+            //Quaternion targetRotation = Quaternion.LookRotation(vec);
+            //player.transform.rotation = Quaternion.Slerp(player.transform.rotation, targetRotation, Time.deltaTime * player._rotationSpeed);
 
             dir.Normalize();
+
+            player._anim.SetFloat("IsValue", dir.magnitude, 0.2f, Time.deltaTime);
+
             dir *= player._moveSpeed;
             dir.y = player._rb.velocity.y;
             player._rb.velocity = dir;

@@ -3,7 +3,9 @@ using UnityEngine;
 
 partial class PlayerController
 {
+    //各ステートを生成
     static readonly PlayerMoveState _moveState = new PlayerMoveState();
+    static readonly PlayerJumpState _jumpState = new PlayerJumpState();
 
     StateBase _currentState = _moveState;
 
