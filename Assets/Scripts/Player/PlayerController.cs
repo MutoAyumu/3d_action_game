@@ -22,6 +22,7 @@ public partial class PlayerController : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody>();
         _anim = GetComponent<Animator>();
+        _handIK = GetComponent<HandIK>();
     }
 
     void OnStart() 
@@ -61,5 +62,10 @@ public partial class PlayerController : MonoBehaviour
         Gizmos.color = Color.green;
         var pos = _footPosition ? _footPosition.position : this.transform.position;
         Gizmos.DrawWireSphere(pos, _footPositionRadius);
+
+        var chest = _chestPosition ? _chestPosition.position : this.transform.position;
+        Gizmos.DrawRay(chest, transform.right * _wallRayLength);
+        Gizmos.DrawRay(chest, -transform.right * _wallRayLength);
+        //Gizmos.DrawRay(, -transform.right * _wallRayLength);
     }
 }

@@ -6,6 +6,7 @@ partial class PlayerController
     //各ステートを生成
     static readonly PlayerMoveState _moveState = new PlayerMoveState();
     static readonly PlayerJumpState _jumpState = new PlayerJumpState();
+    static readonly PlayerGrapplingState _grapplingState = new PlayerGrapplingState();
 
     StateBase _currentState = _moveState;
 
@@ -29,5 +30,6 @@ partial class PlayerController
         _currentState.OnExit(this, nextState);
         nextState.OnEnter(this, _currentState);
         _currentState = nextState;
+        Debug.Log($"CurrentState {_currentState} : NextState {nextState}");
     }
 }

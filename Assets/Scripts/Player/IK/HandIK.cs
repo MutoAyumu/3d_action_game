@@ -21,6 +21,14 @@ public class HandIK : MonoBehaviour
     [SerializeField, Range(0f, 1f)] float _leftRotationWeight = 0;
     Animator _anim = default;
 
+    public Transform RightTarget { get => _rightTarget; set => _rightTarget = value; }
+    public Transform LeftTarget { get => _leftTarget; set => _leftTarget = value; }
+    public bool IsRight { get => _isRight; set => _isRight = value; }
+    public bool IsLeft { get => _isLeft; set => _isLeft = value; }
+
+    bool _isRight;
+    bool _isLeft;
+
     void Start()
     {
         _anim = GetComponent<Animator>();
@@ -28,15 +36,22 @@ public class HandIK : MonoBehaviour
 
     void OnAnimatorIK(int layerIndex)
     {
-        // âEéËÇ…ëŒÇµÇƒ IK Çê›íËÇ∑ÇÈ
-        _anim.SetIKPositionWeight(AvatarIKGoal.RightHand, _rightPositionWeight);
-        _anim.SetIKRotationWeight(AvatarIKGoal.RightHand, _rightRotationWeight);
-        _anim.SetIKPosition(AvatarIKGoal.RightHand, _rightTarget.position);
-        _anim.SetIKRotation(AvatarIKGoal.RightHand, _rightTarget.rotation);
-        // ç∂éËÇ…ëŒÇµÇƒ IK Çê›íËÇ∑ÇÈ
-        _anim.SetIKPositionWeight(AvatarIKGoal.LeftHand, _leftPositionWeight);
-        _anim.SetIKRotationWeight(AvatarIKGoal.LeftHand, _leftRotationWeight);
-        _anim.SetIKPosition(AvatarIKGoal.LeftHand, _leftTarget.position);
-        _anim.SetIKRotation(AvatarIKGoal.LeftHand, _leftTarget.rotation);
+        if (_rightTarget && _isRight)
+        {
+            // âEéËÇ…ëŒÇµÇƒ IK Çê›íËÇ∑ÇÈ
+            _anim.SetIKPositionWeight(AvatarIKGoal.RightHand, _rightPositionWeight);
+            _anim.SetIKRotationWeight(AvatarIKGoal.RightHand, _rightRotationWeight);
+            _anim.SetIKPosition(AvatarIKGoal.RightHand, _rightTarget.position);
+            _anim.SetIKRotation(AvatarIKGoal.RightHand, _rightTarget.rotation);
+        }
+
+        if (_leftTarget && _isLeft)
+        {
+            // ç∂éËÇ…ëŒÇµÇƒ IK Çê›íËÇ∑ÇÈ
+            _anim.SetIKPositionWeight(AvatarIKGoal.LeftHand, _leftPositionWeight);
+            _anim.SetIKRotationWeight(AvatarIKGoal.LeftHand, _leftRotationWeight);
+            _anim.SetIKPosition(AvatarIKGoal.LeftHand, _leftTarget.position);
+            _anim.SetIKRotation(AvatarIKGoal.LeftHand, _leftTarget.rotation);
+        }
     }
 }
