@@ -23,26 +23,34 @@ public class PlayerShooting : MonoBehaviour
 
     private void Update()
     {
-        if(_targetImage)
-        {
-            if(_currentFocusTarget)
-            {
-
-            }
-        }
+        TargetFocus();
     }
 
+    /// <summary>
+    /// 一番近い敵をフォーカスする
+    /// </summary>
     void TargetFocus()
     {
-        if(Input.GetKeyDown(KeyCode.K))
+        if (_enemies.Count > 0)
         {
-            Debug.Log("リストが空です");
+            //リストの先頭をターゲットにする
+            _currentFocusTarget = _enemies.OrderBy(x => Vector3.Distance(this.transform.position, x.transform.position)).FirstOrDefault();
+        }
+        else
+        {
+            //リストが空の間は、ターゲットをNullにする
+            _currentFocusTarget = null;
+            _targetImage.transform.position = Camera.main.ViewportToScreenPoint(new Vector3(0.5f, 0.5f, 0));
+            PlayerManager.Instance.Target = null;
+        }
 
-            if(_enemies.Count > 0)
+        if (_targetImage)
+        {
+            if (_currentFocusTarget)
             {
-                _count++;
-
-                _currentFocusTarget = _enemies[_enemies.Count % _count];
+                //フォーカスイメージの座標ををターゲットの座標に書き換える
+                _targetImage.transform.position = RectTransformUtility.WorldToScreenPoint(Camera.main, _currentFocusTarget.transform.position);
+                PlayerManager.Instance.Target = _currentFocusTarget;
             }
         }
     }
@@ -118,7 +126,7 @@ public class PlayerShooting : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.TryGetComponent(out EnemyBase enemy))
+        if (other.TryGetComponent(out EnemyBase enemy))
         {
             if (!_enemies.Contains(enemy)) //敵がリスト内に格納されていなければ追加
             {

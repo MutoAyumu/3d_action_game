@@ -8,14 +8,23 @@ public class PlayerManager
     static PlayerManager _instance = new PlayerManager();
     public static PlayerManager Instance => _instance;
 
+    public EnemyBase Target { get => _target; set => _target = value; }
+
     List<WeaponModelData> _modelList = new List<WeaponModelData>();
     WeaponDataBase _dataBase;
+
+    EnemyBase _target;
+
+    /// <summary>
+    /// コンストラクタ
+    /// </summary>
+    public PlayerManager() { }
 
     public void Setup(PlayerManagerAttachment attachment)
     {
         _dataBase = attachment.DataBase;
     }
-
+    
     /// <summary>
     /// 武器データの作成
     /// </summary>
@@ -60,4 +69,6 @@ public class PlayerManager
 
         return weapon;
     }
+
+
 }
