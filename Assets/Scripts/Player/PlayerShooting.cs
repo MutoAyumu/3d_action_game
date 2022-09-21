@@ -40,6 +40,8 @@ public class PlayerShooting : MonoBehaviour
         {
             //リストが空の間は、ターゲットをNullにする
             _currentFocusTarget = null;
+            _targetImage.transform.position = Camera.main.ViewportToScreenPoint(new Vector3(0.5f, 0.5f, 0));
+            PlayerManager.Instance.Target = null;
         }
 
         if (_targetImage)
@@ -48,6 +50,7 @@ public class PlayerShooting : MonoBehaviour
             {
                 //フォーカスイメージの座標ををターゲットの座標に書き換える
                 _targetImage.transform.position = RectTransformUtility.WorldToScreenPoint(Camera.main, _currentFocusTarget.transform.position);
+                PlayerManager.Instance.Target = _currentFocusTarget;
             }
         }
     }

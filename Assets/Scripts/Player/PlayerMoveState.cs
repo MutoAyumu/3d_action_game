@@ -49,6 +49,8 @@ partial class PlayerController
         }
         void Move(PlayerController player)
         {
+            if (!player.IsGround) return;
+
             //“ü—Í
             var h = Input.GetAxisRaw("Horizontal");
             var v = Input.GetAxisRaw("Vertical");

@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// スキルの基底クラス
 /// </summary>
-public class SkillBase : MonoBehaviour
+public abstract class SkillBase
 {
-
+    public abstract void Use();
 }
