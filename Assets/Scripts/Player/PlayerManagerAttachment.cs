@@ -17,6 +17,6 @@ public class PlayerManagerAttachment : MonoBehaviour
     }
     private void Start()
     {
-        PlayerManager.Instance.CreateData(_name, _type)
+        //PlayerManager.Instance.CreateData(_name, _type)
 ;    }
 }

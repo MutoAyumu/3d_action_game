@@ -49,7 +49,7 @@ public class PlayerShooting : MonoBehaviour
             if (_currentFocusTarget)
             {
                 //フォーカスイメージの座標ををターゲットの座標に書き換える
-                _targetImage.transform.position = RectTransformUtility.WorldToScreenPoint(Camera.main, _currentFocusTarget.transform.position);
+                _targetImage.transform.position = RectTransformUtility.WorldToScreenPoint(Camera.main, _currentFocusTarget.Center.position);
                 PlayerManager.Instance.Target = _currentFocusTarget;
             }
         }

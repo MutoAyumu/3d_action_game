@@ -31,14 +31,18 @@ public class SkillController : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Z))
+        if (PlayerManager.Instance.Target != null)
         {
-            _straightBulletSkill.Use();
+            if (Input.GetKeyDown(KeyCode.Z))
+            {
+                _straightBulletSkill.Use();
+            }
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                _homingBulletSkill.Use();
+            }
         }
-        if(Input.GetKeyDown(KeyCode.X))
-        {
-            _homingBulletSkill.Use();
-        }
+
         if (Input.GetKeyDown(KeyCode.C))
         {
             _springBoardSkill.Use();

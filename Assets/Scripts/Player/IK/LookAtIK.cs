@@ -20,6 +20,8 @@ public class LookAtIK : MonoBehaviour
     [SerializeField, Range(0f, 1f)] float _clampWeight = 0;
     Animator _anim = default;
 
+    public Transform Target { get => _target; set => _target = value; }
+
     void Start()
     {
         _anim = GetComponent<Animator>();

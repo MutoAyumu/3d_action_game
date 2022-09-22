@@ -23,11 +23,12 @@ public class WeaponDataBase : ScriptableObject
         var type = data.Type;
         var name = data.Name;
         var length = data.MaxLength;
-        var random = data.RandomRange;
-        var range = Random.Range(random.x, random.y);
+        var range = data.Range;
+        var power = data.Power;
+        var speed = data.ShotSpeed;
 
         //çÏê¨ÇµÇΩÉfÅ[É^Çï‘Ç∑
-        return new WeaponModelData() { Type = type, Name = name, MaxLength = length, Range = range };
+        return new WeaponModelData() { Type = type, Name = name, MaxLength = length, Range = range , Power = power, ShotSpeed = speed};
     }
     WeaponData Init(string name, WeaponType type)
     {

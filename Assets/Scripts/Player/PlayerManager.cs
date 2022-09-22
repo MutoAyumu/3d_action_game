@@ -36,7 +36,7 @@ public class PlayerManager
 
         if (data != null)
         {
-            Debug.Log($"{data} : [Name = {data.Name} : Type = {data.Type} : Length = {data.MaxLength} : Range = {data.Range}]");
+            Debug.Log($"{data} : [Name = {data.Name} : Type = {data.Type} : Length = {data.MaxLength} : Range = {data.Range} : Power = {data.Power} : ShotSpeed = {data.ShotSpeed}]");
             _modelList.Add(data);
         }
     }
