@@ -9,13 +9,17 @@ public class WeaponData : ScriptableObject
     [SerializeField, Tooltip("•Ší‚ÌŽí—Þ")] WeaponType _type;
     [SerializeField, Tooltip("–¼‘O")] string _name;
     [SerializeField, Tooltip("UŒ‚‹——£")] float _maxLength = 10f;
-    [SerializeField, Tooltip("’e‚ªŽU’e‚·‚é”ÍˆÍ")] Vector2 _randomRange = Vector2.one;
+    [SerializeField, Tooltip("’e‚ªŽU’e‚·‚é”ÍˆÍ")] float _range = 1f;
+    [SerializeField, Tooltip("UŒ‚—Í")] int _power = 10;
+    [SerializeField, Tooltip("”­ŽË‘¬“x")] float _shotSpeed = 0.1f;
     //‚±‚±‚Éƒ‚ƒfƒ‹‚à’Ç‰Á‚·‚é‚©‚à‚µ‚ê‚È‚¢
 
     public WeaponType Type => _type;
     public string Name => _name;
     public float MaxLength => _maxLength;
-    public Vector2 RandomRange => _randomRange;
+    public float Range => _range;
+    public int Power => _power;
+    public float ShotSpeed => _shotSpeed;
 }
 public enum WeaponType
 {
@@ -30,4 +34,6 @@ public class WeaponModelData
     public string Name;
     public float MaxLength;
     public float Range;
+    public int Power;
+    public float ShotSpeed;
 }

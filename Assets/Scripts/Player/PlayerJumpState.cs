@@ -11,29 +11,35 @@ partial class PlayerController
     public class PlayerJumpState : StateBase
     {
         float _changeStateTimer;
+        PlayerController _player;
 
-        public override void OnEnter(PlayerController player, StateBase state)
+        public override void OnEnter(StatePatternBase entity, StateBase state)
         {
-            Jump(player);
+            if(!_player)
+            {
+                _player = entity.GetComponent<PlayerController>();
+            }
+
+            Jump();
             _changeStateTimer = 0;
         }
-        public override void OnUpdate(PlayerController player)
+        public override void OnUpdate(StatePatternBase entity)
         {
             _changeStateTimer += Time.deltaTime;
 
-            if (player.IsGround && _changeStateTimer >= player._changeStateTime)
+            if (_player.IsGround && _changeStateTimer >= _player._changeStateTime)
             {
-                player.ChangeState(_moveState);
+                _player.ChangeState(_moveState);
             }
         }
-        public override void OnExit(PlayerController player, StateBase nextState)
+        public override void OnExit(StatePatternBase entity, StateBase nextState)
         {
             
         }
 
-        void Jump(PlayerController player)
+        void Jump()
         {
-            player._rb.AddForce(Vector3.up * player._jumpPower, ForceMode.VelocityChange);
+            _player._rb.AddForce(Vector3.up * _player._jumpPower, ForceMode.VelocityChange);
         }
     }
 }

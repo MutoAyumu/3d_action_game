@@ -26,8 +26,8 @@ public class HandIK : MonoBehaviour
     public bool IsRight { get => _isRight; set => _isRight = value; }
     public bool IsLeft { get => _isLeft; set => _isLeft = value; }
 
-    bool _isRight;
-    bool _isLeft;
+    [SerializeField] bool _isRight;
+    [SerializeField] bool _isLeft;
 
     void Start()
     {

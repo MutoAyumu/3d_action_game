@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-partial class PlayerController
+public class StatePatternBase : MonoBehaviour
 {
-    //各ステートを生成
-    static readonly PlayerMoveState _moveState = new PlayerMoveState();
-    static readonly PlayerJumpState _jumpState = new PlayerJumpState();
-    static readonly PlayerGrapplingState _grapplingState = new PlayerGrapplingState();
+    protected StateBase _currentState;
 
-    StateBase _currentState = _moveState;
+    private void Awake()
+    {
+        OnAwake();
+    }
 
     private void Start()
     {
@@ -32,4 +32,8 @@ partial class PlayerController
         _currentState = nextState;
         Debug.Log($"CurrentState {_currentState} : NextState {nextState}");
     }
+
+    protected virtual void OnAwake() { }
+    protected virtual void OnStart() { }
+    protected virtual void OnUpdate() { }
 }

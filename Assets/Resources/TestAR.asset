@@ -15,4 +15,6 @@ MonoBehaviour:
   _type: 0
   _name: TestAR
   _maxLength: 10
-  _randomRange: {x: 1, y: 3}
+  _range: 1
+  _power: 10
+  _shotSpeed: 0.1

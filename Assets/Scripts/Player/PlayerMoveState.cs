@@ -16,40 +16,40 @@ partial class PlayerController
 
     [SerializeField] Transform _leftHandPosition;
     [SerializeField] Transform _rightHandPosition;
-    HandIK _handIK;
 
     /// <summary>
     /// 移動系のStateクラス
     /// </summary>
     public class PlayerMoveState : StateBase
     {
-        public override void OnEnter(PlayerController player, StateBase state) 
+        PlayerController _player;
+
+        public override void OnEnter(StatePatternBase entity, StateBase state) 
         {
-            
+            if(!_player)
+            {
+                _player = entity.GetComponent<PlayerController>();
+            }
         }
 
-        public override void OnUpdate(PlayerController player)
+        public override void OnUpdate(StatePatternBase entity)
         {
-            Move(player);
+            Move();
             //WallRun(player);
 
             if (Input.GetButtonDown("Jump"))
             {
-                player.ChangeState(_jumpState);
-            }
-            if(Input.GetButtonDown("Fire1"))
-            {
-                player.ChangeState(_grapplingState);
+                entity.ChangeState(_jumpState);
             }
         }
 
-        public override void OnExit(PlayerController player, StateBase nextState)
+        public override void OnExit(StatePatternBase entity, StateBase nextState)
         { 
         
         }
-        void Move(PlayerController player)
+        void Move()
         {
-            if (!player.IsGround) return;
+            if (!_player.IsGround) return;
 
             //入力
             var h = Input.GetAxisRaw("Horizontal");
@@ -65,7 +65,7 @@ partial class PlayerController
 
                 // 入力方向に滑らかに回転させる
                 Quaternion targetRotation = Quaternion.LookRotation(dir);
-                player.transform.rotation = Quaternion.Slerp(player.transform.rotation, targetRotation, Time.deltaTime * player._rotationSpeed);
+                _player.transform.rotation = Quaternion.Slerp(_player.transform.rotation, targetRotation, Time.deltaTime * _player._rotationSpeed);
             }
             //else //カメラの前方向に向かせる
             //{
@@ -84,11 +84,11 @@ partial class PlayerController
 
             dir.Normalize();
 
-            player._anim.SetFloat("IsValue", dir.magnitude, 0.2f, Time.deltaTime);
+            _player._anim.SetFloat("IsValue", dir.magnitude, 0.2f, Time.deltaTime);
 
-            dir *= player._moveSpeed;
-            dir.y = player._rb.velocity.y;
-            player._rb.velocity = dir;
+            dir *= _player._moveSpeed;
+            dir.y = _player._rb.velocity.y;
+            _player._rb.velocity = dir;
         }
 
         void WallRun(PlayerController player)

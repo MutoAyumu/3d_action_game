@@ -211,7 +211,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 5
-  _power: 1
+  _power: 100
   _time: 1
   _limitAcceleration: 0
   _maxAcceleration: 100

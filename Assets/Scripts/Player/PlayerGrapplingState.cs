@@ -15,36 +15,42 @@ partial class PlayerController
     {
         RaycastHit _hit;
         Vector3 _endPosition;
+        PlayerController _player;
 
-        public override void OnEnter(PlayerController player, StateBase state)
+        public override void OnEnter(StatePatternBase entity, StateBase state)
         {
+            if(!_player)
+            {
+                _player = entity.GetComponent<PlayerController>();
+            }
+
             var t = Camera.main.transform;
-            var hit = Physics.Raycast(t.position, t.forward, out _hit, player._grapplingRayLength, player._grapplingLayer);
+            var hit = Physics.Raycast(t.position, t.forward, out _hit, _player._grapplingRayLength, _player._grapplingLayer);
             
             if(!hit)
             {
-                player.ChangeState(_moveState);
+                _player.ChangeState(_moveState);
                 return;
             }
 
-            player._rb.useGravity = false;
-            player.transform.rotation = Quaternion.LookRotation(_endPosition - player._topPosition.position);
+            _player._rb.useGravity = false;
+            _player.transform.rotation = Quaternion.LookRotation(_endPosition - _player._topPosition.position);
             _endPosition = _hit.point;
         }
-        public override void OnUpdate(PlayerController player)
+        public override void OnUpdate(StatePatternBase entity)
         {
-            if(Vector3.Distance(player._topPosition.position, _endPosition) < player._grapplingPointMargin)
+            if(Vector3.Distance(_player._topPosition.position, _endPosition) < _player._grapplingPointMargin)
             {
-                player.ChangeState(_moveState);
+                _player.ChangeState(_moveState);
             }
 
-            var dir = _endPosition - player._topPosition.position;
+            var dir = _endPosition - _player._topPosition.position;
 
-            player._rb.AddForce(dir * player._grapplingPower, ForceMode.Acceleration);
+            _player._rb.AddForce(dir * _player._grapplingPower, ForceMode.Acceleration);
         }
-        public override void OnExit(PlayerController player, StateBase nextState)
+        public override void OnExit(StatePatternBase entity, StateBase nextState)
         {
-            player._rb.useGravity = true;
+            _player._rb.useGravity = true;
         }
     }
 }

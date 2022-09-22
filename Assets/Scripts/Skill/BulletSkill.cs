@@ -54,7 +54,7 @@ public class BulletSkill : SkillBase
             var offSet = new Vector3(Random.Range(-1f,1f), Random.Range(-1f, 1f), 0);
 
             var bullet = GameObject.Instantiate(_prefab, _transform.position + offSet, Quaternion.identity, _transform);
-            bullet.OnSetTarget(PlayerManager.Instance.Target.transform);
+            bullet.OnSetTarget(PlayerManager.Instance.Target.Center.transform);
         }
     }
 
