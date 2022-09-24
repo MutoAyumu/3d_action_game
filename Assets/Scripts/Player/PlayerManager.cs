@@ -10,10 +10,22 @@ public class PlayerManager
 
     public EnemyBase Target { get => _target; set => _target = value; }
 
+    /// <summary>
+    /// 所持している武器のリスト
+    /// </summary>
+    public List<WeaponModelData> WeaponModels => _modelList;
+
     List<WeaponModelData> _modelList = new List<WeaponModelData>();
     WeaponDataBase _dataBase;
 
     EnemyBase _target;
+
+    WeaponModelData _currentWeapon;
+
+    /// <summary>
+    /// 現在使っている武器
+    /// </summary>
+    public WeaponModelData CurrentWeapon => _currentWeapon;
 
     /// <summary>
     /// コンストラクタ
@@ -36,39 +48,44 @@ public class PlayerManager
 
         if (data != null)
         {
-            Debug.Log($"{data} : [Name = {data.Name} : Type = {data.Type} : Length = {data.MaxLength} : Range = {data.Range} : Power = {data.Power} : ShotSpeed = {data.ShotSpeed}]");
+            Debug.Log($"{data} : [Name = {data.Name} : Type = {data.Type} : ID = {data.ID} : Length = {data.MaxLength} : Range = {data.Range} : Power = {data.Power} : ShotSpeed = {data.ShotSpeed}]");
             _modelList.Add(data);
         }
     }
 
     /// <summary>
     /// リストからデータを検索
+    /// <code>
+    /// IDとTypeで取得する
+    /// </code>
     /// </summary>
     /// <param name="name"></param>
     /// <param name="type"></param>
     /// <returns></returns>
-    public WeaponModelData GetModelData(string name, WeaponType type)
+    public WeaponModelData GetModelData(int id, WeaponType type)
     {
-        var data = _modelList.Where(x => x.Name == name && x.Type == type);
+        var data = _modelList.Where(x => x.ID == id && x.Type == type);
         WeaponModelData weapon = null;
 
-        if (data.Count() >= 2)
-        {
-            weapon = data.First();
-            Debug.LogError($"複数のデータが見つかりました。先頭データを返します : {weapon}");
-        }
-        else if (data.Count() == 0)
+        if (data.Count() == 0)
         {
             Debug.LogError($"指定した名前・タイプのデータが存在しません");
         }
         else
         {
             weapon = data.Single();
-            Debug.Log($"指定データが見つかりました : {weapon}");
+            Debug.Log($"指定データが見つかりました : Name = {weapon.Name} : ID = {weapon.ID} : Type = {weapon.Type}");
         }
 
         return weapon;
     }
 
-
+    /// <summary>
+    /// 武器を切り替える
+    /// </summary>
+    /// <param name="data"></param>
+    public void ChangeWeapon(WeaponModelData data)
+    {
+        _currentWeapon = data;
+    }
 }

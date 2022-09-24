@@ -23,8 +23,8 @@ public class WeaponData : ScriptableObject
 }
 public enum WeaponType
 {
-    AR,     //アサルト武器
-    SMG,    //サブマシンガン武器
+    AR = 0,     //アサルト武器
+    SMG = 1,    //サブマシンガン武器
 }
 
 [System.Serializable]
@@ -32,6 +32,7 @@ public class WeaponModelData
 {
     public WeaponType Type;
     public string Name;
+    public int ID;
     public float MaxLength;
     public float Range;
     public int Power;

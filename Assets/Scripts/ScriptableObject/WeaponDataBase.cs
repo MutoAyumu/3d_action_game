@@ -8,6 +8,15 @@ public class WeaponDataBase : ScriptableObject
 {
     [SerializeField] WeaponData[] _weapons;
 
+    int[] _weaponsID;
+ 
+    private void OnEnable()
+    {
+        //ScriptableObjectのOnEnableはゲーム(ランタイム)中初めて読み込まれた時に1度だけ走る
+        //もしかしたらおかしくなるかも（変な挙動をしたらここを直す）
+        _weaponsID = new int[_weapons.Length];
+    }
+
     /// <summary>
     /// データの取得
     /// </summary>
@@ -27,8 +36,24 @@ public class WeaponDataBase : ScriptableObject
         var power = data.Power;
         var speed = data.ShotSpeed;
 
+        //タイプによって増加させるIDを変える
+        var id = 0;
+
+        switch(type)
+        {
+            case WeaponType.AR:
+                id = _weaponsID[0];
+                _weaponsID[0]++;
+                break;
+
+            case WeaponType.SMG:
+                id = _weaponsID[1];
+                _weaponsID[1]++;
+                break;
+        }
+
         //作成したデータを返す
-        return new WeaponModelData() { Type = type, Name = name, MaxLength = length, Range = range , Power = power, ShotSpeed = speed};
+        return new WeaponModelData() { Type = type, Name = name, ID = id, MaxLength = length, Range = range , Power = power, ShotSpeed = speed};
     }
     WeaponData Init(string name, WeaponType type)
     {
