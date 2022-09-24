@@ -14,5 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _type: 1
   _name: TestSMG
-  _maxLength: 10
-  _randomRange: {x: 1, y: 1}
+  _maxLength: 7
+  _range: 1.5
+  _power: 5
+  _shotSpeed: 0.05

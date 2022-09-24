@@ -11,7 +11,7 @@ public partial class PlayerController : StatePatternBase
     bool _isGround;
 
     [Header("=== ŽËŒ‚ŠÖŒW ===")]
-    [SerializeField] string _weaponName = "";
+    [SerializeField] int _weaponID = 0;
     [SerializeField] WeaponType _weaponType;
     [SerializeField] LayerMask _targetLayer;
     [SerializeField] RectTransform _targetImage;
@@ -46,14 +46,13 @@ public partial class PlayerController : StatePatternBase
 
         _currentState = _moveState;
 
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
     }
 
     protected override void OnStart() 
     {
-        PlayerManager.Instance.CreateData(_weaponName, _weaponType);
-        _weapon = PlayerManager.Instance.GetModelData(_weaponName, _weaponType);
+        _weapon = PlayerManager.Instance.CurrentWeapon;
     }
     protected override void OnUpdate() 
     {
@@ -88,10 +87,14 @@ public partial class PlayerController : StatePatternBase
 
     void Shot()
     {
-        if(Input.GetButton("Fire1"))
+        if(Input.GetButton("Fire2"))
         {
             _shotTimer += Time.deltaTime;
         }
+
+        _weapon = PlayerManager.Instance.CurrentWeapon;
+
+        if (_weapon == null) return;
 
         if(_shotTimer >= _weapon.ShotSpeed)
         {
