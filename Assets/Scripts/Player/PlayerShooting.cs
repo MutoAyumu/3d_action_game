@@ -12,9 +12,9 @@ public class PlayerShooting : MonoBehaviour
     [SerializeField] RectTransform _targetImage;
 
     int _count;
-    EnemyBase _currentFocusTarget;
+    EnemyController _currentFocusTarget;
 
-    public List<EnemyBase> _enemies = new List<EnemyBase>();
+    public List<EnemyController> _enemies = new List<EnemyController>();
 
     private void Awake()
     {
@@ -126,7 +126,7 @@ public class PlayerShooting : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent(out EnemyBase enemy))
+        if (other.TryGetComponent(out EnemyController enemy))
         {
             if (!_enemies.Contains(enemy)) //“G‚ªƒŠƒXƒg“à‚ÉŠi”[‚³‚ê‚Ä‚¢‚È‚¯‚ê‚Î’Ç‰Á
             {
@@ -136,7 +136,7 @@ public class PlayerShooting : MonoBehaviour
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.TryGetComponent(out EnemyBase enemy))
+        if (other.TryGetComponent(out EnemyController enemy))
         {
             if (_enemies.Contains(enemy)) //“G‚ªƒŠƒXƒg“à‚ÉŠi”[‚³‚ê‚Ä‚¢‚ê‚Îíœ
             {

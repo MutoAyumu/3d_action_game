@@ -8,7 +8,7 @@ public class PlayerManager
     static PlayerManager _instance = new PlayerManager();
     public static PlayerManager Instance => _instance;
 
-    public EnemyBase Target { get => _target; set => _target = value; }
+    public EnemyController Target { get => _target; set => _target = value; }
 
     /// <summary>
     /// Š‚µ‚Ä‚¢‚é•Ší‚ÌƒŠƒXƒg
@@ -18,7 +18,7 @@ public class PlayerManager
     List<WeaponModelData> _modelList = new List<WeaponModelData>();
     WeaponDataBase _dataBase;
 
-    EnemyBase _target;
+    EnemyController _target;
 
     WeaponModelData _currentWeapon;
 
