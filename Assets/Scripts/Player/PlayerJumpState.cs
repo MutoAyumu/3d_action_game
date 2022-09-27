@@ -25,12 +25,14 @@ partial class PlayerController
         }
         public override void OnUpdate(StatePatternBase entity)
         {
+            _player.ChangeState(_moveState);
+
             _changeStateTimer += Time.deltaTime;
 
-            if (_player.IsGround && _changeStateTimer >= _player._changeStateTime)
-            {
-                _player.ChangeState(_moveState);
-            }
+            //if (_player.IsGround && _changeStateTimer >= _player._changeStateTime)
+            //{
+            //    _player.ChangeState(_moveState);
+            //}
         }
         public override void OnExit(StatePatternBase entity, StateBase nextState)
         {

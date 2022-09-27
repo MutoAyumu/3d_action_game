@@ -27,10 +27,10 @@ public class StatePatternBase : MonoBehaviour
     /// <param name="nextState"></param>
     public void ChangeState(StateBase nextState)
     {
+        Debug.Log($"CurrentState {_currentState} : NextState {nextState}");
         _currentState.OnExit(this, nextState);
         nextState.OnEnter(this, _currentState);
         _currentState = nextState;
-        Debug.Log($"CurrentState {_currentState} : NextState {nextState}");
     }
 
     protected virtual void OnAwake() { }

@@ -35,7 +35,6 @@ partial class PlayerController
         public override void OnUpdate(StatePatternBase entity)
         {
             Move();
-            //WallRun(player);
 
             if (Input.GetButtonDown("Jump"))
             {
@@ -49,8 +48,6 @@ partial class PlayerController
         }
         void Move()
         {
-            if (!_player.IsGround) return;
-
             //“ü—Í
             var h = Input.GetAxisRaw("Horizontal");
             var v = Input.GetAxisRaw("Vertical");
