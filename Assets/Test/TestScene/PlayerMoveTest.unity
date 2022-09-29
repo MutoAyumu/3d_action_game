@@ -157,13 +157,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _radius: 3
+  _Angle: 70
   _targetLayer:
     serializedVersion: 2
     m_Bits: 0
+  _missTime: 60
   _centerPosition: {fileID: 0}
   _enemyType: 0
+  _moveUpToTime: 10
   _moveSpeed: 3
   _stopDistance: 3
+  _randomPosition: {x: 3, y: 0, z: 3}
 --- !u!54 &29697376
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -781,7 +785,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 163702855}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1, y: 0.93799996, z: -5.668}
+  m_LocalPosition: {x: -7.6233997, y: 0.79999995, z: -1.69}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1077,7 +1081,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh24510
+  m_Name: pb_Mesh27064
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -1318,7 +1322,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh24614
+  m_Name: pb_Mesh27164
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -1690,7 +1694,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh24430
+  m_Name: pb_Mesh26984
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -1882,13 +1886,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _radius: 3
+  _Angle: 70
   _targetLayer:
     serializedVersion: 2
     m_Bits: 0
+  _missTime: 60
   _centerPosition: {fileID: 0}
   _enemyType: 0
+  _moveUpToTime: 10
   _moveSpeed: 3
   _stopDistance: 3
+  _randomPosition: {x: 3, y: 0, z: 3}
 --- !u!54 &636888790
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5287,7 +5295,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh24692
+  m_Name: pb_Mesh27240
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -5666,13 +5674,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _radius: 3
+  _Angle: 70
   _targetLayer:
     serializedVersion: 2
     m_Bits: 0
+  _missTime: 60
   _centerPosition: {fileID: 0}
   _enemyType: 0
+  _moveUpToTime: 10
   _moveSpeed: 3
   _stopDistance: 3
+  _randomPosition: {x: 3, y: 0, z: 3}
 --- !u!1 &1340519153
 GameObject:
   m_ObjectHideFlags: 0
@@ -5787,7 +5799,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh24600
+  m_Name: pb_Mesh27150
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -6143,7 +6155,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh24496
+  m_Name: pb_Mesh27050
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -7780,13 +7792,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _radius: 3
+  _Angle: 70
   _targetLayer:
     serializedVersion: 2
     m_Bits: 0
+  _missTime: 60
   _centerPosition: {fileID: 0}
   _enemyType: 0
+  _moveUpToTime: 10
   _moveSpeed: 3
   _stopDistance: 3
+  _randomPosition: {x: 3, y: 0, z: 3}
 --- !u!54 &2071539473
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -7887,7 +7903,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh24482
+  m_Name: pb_Mesh27036
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -8419,7 +8435,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh24312
+  m_Name: pb_Mesh26866
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -13651,11 +13667,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _target: {fileID: 0}
-  _weight: 0
-  _bodyWeight: 0
-  _headWeight: 0
-  _eyesWeight: 0
-  _clampWeight: 0
+  _weight: 0.5
+  _bodyWeight: 0.3
+  _headWeight: 0.3
+  _eyesWeight: 1
+  _clampWeight: 0.5
 --- !u!114 &7591037450250700406
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13686,7 +13702,7 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 1
   m_Drag: 0
-  m_AngularDrag: 1
+  m_AngularDrag: 10
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -13718,14 +13734,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22fb50949768bce47a22bb13b16b7799, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _radius: 3
+  _radius: 6
+  _Angle: 140
   _targetLayer:
     serializedVersion: 2
     m_Bits: 512
+  _missTime: 60
   _centerPosition: {fileID: 7591037450243778564}
   _enemyType: 0
+  _moveUpToTime: 10
   _moveSpeed: 3
   _stopDistance: 3
+  _randomPosition: {x: 3, y: 0, z: 3}
 --- !u!1 &7611603448725662255
 GameObject:
   m_ObjectHideFlags: 0

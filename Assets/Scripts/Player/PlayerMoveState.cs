@@ -17,6 +17,8 @@ partial class PlayerController
     [SerializeField] Transform _leftHandPosition;
     [SerializeField] Transform _rightHandPosition;
 
+    public Transform Center => _chestPosition;
+
     /// <summary>
     /// ˆÚ“®Œn‚ÌStateƒNƒ‰ƒX
     /// </summary>
