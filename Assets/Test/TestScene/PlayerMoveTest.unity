@@ -161,13 +161,13 @@ MonoBehaviour:
   _targetLayer:
     serializedVersion: 2
     m_Bits: 0
+  _rotateSpeed: 5
   _missTime: 60
   _centerPosition: {fileID: 0}
   _enemyType: 0
   _moveUpToTime: 10
   _moveSpeed: 3
   _stopDistance: 3
-  _randomPosition: {x: 3, y: 0, z: 3}
 --- !u!54 &29697376
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1890,13 +1890,13 @@ MonoBehaviour:
   _targetLayer:
     serializedVersion: 2
     m_Bits: 0
+  _rotateSpeed: 5
   _missTime: 60
   _centerPosition: {fileID: 0}
   _enemyType: 0
   _moveUpToTime: 10
   _moveSpeed: 3
   _stopDistance: 3
-  _randomPosition: {x: 3, y: 0, z: 3}
 --- !u!54 &636888790
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5678,13 +5678,13 @@ MonoBehaviour:
   _targetLayer:
     serializedVersion: 2
     m_Bits: 0
+  _rotateSpeed: 5
   _missTime: 60
   _centerPosition: {fileID: 0}
   _enemyType: 0
   _moveUpToTime: 10
   _moveSpeed: 3
   _stopDistance: 3
-  _randomPosition: {x: 3, y: 0, z: 3}
 --- !u!1 &1340519153
 GameObject:
   m_ObjectHideFlags: 0
@@ -7796,13 +7796,13 @@ MonoBehaviour:
   _targetLayer:
     serializedVersion: 2
     m_Bits: 0
+  _rotateSpeed: 5
   _missTime: 60
   _centerPosition: {fileID: 0}
   _enemyType: 0
   _moveUpToTime: 10
   _moveSpeed: 3
   _stopDistance: 3
-  _randomPosition: {x: 3, y: 0, z: 3}
 --- !u!54 &2071539473
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -10380,7 +10380,7 @@ MonoBehaviour:
   _topPosition: {fileID: 469017412}
   _jumpPower: 5
   _changeStateTime: 0.5
-  _moveSpeed: 5
+  _moveSpeed: 7
   _rotationSpeed: 10
   _wallLayer:
     serializedVersion: 2
@@ -13739,13 +13739,13 @@ MonoBehaviour:
   _targetLayer:
     serializedVersion: 2
     m_Bits: 512
+  _rotateSpeed: 3
   _missTime: 60
   _centerPosition: {fileID: 7591037450243778564}
   _enemyType: 0
   _moveUpToTime: 10
   _moveSpeed: 3
-  _stopDistance: 3
-  _randomPosition: {x: 3, y: 0, z: 3}
+  _stopDistance: 6
 --- !u!1 &7611603448725662255
 GameObject:
   m_ObjectHideFlags: 0

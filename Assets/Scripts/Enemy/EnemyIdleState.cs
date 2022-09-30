@@ -24,6 +24,8 @@ partial class EnemyController
 
         public override void OnUpdate(StatePatternBase entity)
         {
+            if (!_enemy._targetTransform) return;
+
             _changeTime += Time.deltaTime;
 
             if(_changeTime >= _enemy._moveUpToTime)

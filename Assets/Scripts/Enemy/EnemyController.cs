@@ -9,6 +9,9 @@ public partial class EnemyController : StatePatternBase
     [SerializeField] float _radius = 3f;
     [SerializeField] float _Angle = 100f;
     [SerializeField] LayerMask _targetLayer;
+    [Space(10)]
+    [SerializeField] float _rotateSpeed = 5f;
+    [Space(10)]
     [SerializeField, Tooltip("見逃すまでの時間")] float _missTime = 60f;
     float _missTimer;
     [Space(10)]
@@ -79,8 +82,9 @@ public partial class EnemyController : StatePatternBase
 
             if (halfAngle * 2 <= _Angle)
             {
-                _targetTransform = hit[0].GetComponent<PlayerController>().Center;
-                _lookAtIK.Target = _targetTransform;
+                var target = hit[0].GetComponent<PlayerController>();
+                _targetTransform = target.transform;
+                _lookAtIK.Target = target.Center;
             }
         }
     }
@@ -93,7 +97,7 @@ public partial class EnemyController : StatePatternBase
         //タイマーを回して一定以上になったら参照をNullにする
         _missTimer += Time.deltaTime;
 
-        if(_missTimer <= _missTime)
+        if(_missTimer > _missTime)
         {
             _missTimer = 0;
             _targetTransform = null;
@@ -112,13 +116,15 @@ public partial class EnemyController : StatePatternBase
         //Y軸を直してから
         var target = _targetTransform.position;
         target.y = _thisTransform.position.y;
-        _thisTransform.LookAt(target);
+        var rot = Quaternion.LookRotation(target - _thisTransform.position);
+        _thisTransform.rotation = Quaternion.Lerp(_thisTransform.rotation, rot, Time.deltaTime * _rotateSpeed);
     }
     private void OnDrawGizmosSelected()
     {
         //扇形のGizmoを表示
         Handles.color = Color.red;
         Handles.DrawWireArc(this.transform.position, Vector3.up, Quaternion.Euler(0f, -_Angle / 2, 0f) * this.transform.forward, _Angle, _radius);
+        Handles.DrawSolidArc(this.transform.position, Vector3.up, Quaternion.Euler(0f, -_Angle / 2, 0f) * this.transform.forward, _Angle, 1f);
     }
 
     enum EnemyType

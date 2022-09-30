@@ -64,7 +64,7 @@ partial class PlayerController
 
                 // “ü—Í•ûŒü‚ÉŠŠ‚ç‚©‚É‰ñ“]‚³‚¹‚é
                 Quaternion targetRotation = Quaternion.LookRotation(dir);
-                _player.transform.rotation = Quaternion.Slerp(_player.transform.rotation, targetRotation, Time.deltaTime * _player._rotationSpeed);
+                _player.transform.rotation = Quaternion.Lerp(_player.transform.rotation, targetRotation, Time.deltaTime * _player._rotationSpeed);
             }
             //else //ƒJƒƒ‰‚Ì‘O•ûŒü‚ÉŒü‚©‚¹‚é
             //{
@@ -72,14 +72,14 @@ partial class PlayerController
             //    vec.y = 0;
 
             //    Quaternion targetRotation = Quaternion.LookRotation(vec);
-            //    player.transform.rotation = Quaternion.Slerp(player.transform.rotation, targetRotation, Time.deltaTime * player._rotationSpeed);
+            //    player.transform.rotation = Quaternion.Lerp(player.transform.rotation, targetRotation, Time.deltaTime * player._rotationSpeed);
             //}
 
             //var vec = Camera.main.transform.forward;
             //vec.y = 0;
 
             //Quaternion targetRotation = Quaternion.LookRotation(vec);
-            //player.transform.rotation = Quaternion.Slerp(player.transform.rotation, targetRotation, Time.deltaTime * player._rotationSpeed);
+            //player.transform.rotation = Quaternion.Lerp(player.transform.rotation, targetRotation, Time.deltaTime * player._rotationSpeed);
 
             dir.Normalize();
 

@@ -7,8 +7,6 @@ partial class EnemyController
     [Header("=== MoveState ===")]
     [SerializeField] float _moveSpeed = 3f;
     [SerializeField] float _stopDistance = 1f;
-    [Space(10)]
-    [SerializeField] Vector3 _randomPosition = new Vector3(3, 0, 3);
 
     public class EnemyMoveState : StateBase
     {
@@ -26,22 +24,25 @@ partial class EnemyController
             var distance = Vector3.Distance(_enemy._thisTransform.position, _enemy._targetTransform.position);
 
             //一定以上距離が離れていたら近づく
-            if(distance > _enemy._stopDistance)
+            if(distance > _enemy._radius)
             {
                 //プレイヤーの位置を設定
                 _destinationPoint = _enemy._targetTransform;
             }
-            else
-            {
-                //自身の周囲ランダムな座標を設定
-                var randomX = _enemy._randomPosition.x;
-                var randomZ = _enemy._randomPosition.z;
-                _destinationPoint.position = _enemy._thisTransform.position + new Vector3(Random.Range(-randomX, randomX), _enemy._thisTransform.position.y, Random.Range(-randomZ, randomZ));
-            }
         }
         public override void OnUpdate(StatePatternBase entity)
         {
+            if(!_destinationPoint)
+            {
+                _enemy.ChangeState(_enemy._idleState);
+            }
+
             Move(_destinationPoint);
+        }
+
+        public override void OnExit(StatePatternBase entity, StateBase nextState)
+        {
+            _destinationPoint = null;
         }
 
         /// <summary>
@@ -51,6 +52,7 @@ partial class EnemyController
         void Move(Transform transform)
         {
             var dir = _destinationPoint.position - _enemy._thisTransform.position;
+            dir.y = _enemy._thisTransform.position.y;
 
             _enemy._rb.velocity = dir.normalized * _enemy._moveSpeed;
 
