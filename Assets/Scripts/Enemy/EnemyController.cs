@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public partial class EnemyController : StatePatternBase
+public partial class EnemyController : StatePatternBase, IDamage
 {
     [Header("基本設定")]
     [SerializeField] float _radius = 3f;
@@ -18,6 +18,9 @@ public partial class EnemyController : StatePatternBase
     [SerializeField] Transform _centerPosition;
     [Space(10)]
     [SerializeField] EnemyType _enemyType;
+    [Space(10)]
+    [SerializeField] int _maxHP = 1000;
+    int _currentHP;
 
     Transform _thisTransform;
     Transform _targetTransform;
@@ -44,6 +47,8 @@ public partial class EnemyController : StatePatternBase
 
         //現在のステートをMoveStateにする
         _currentState = _idleState;
+
+        _currentHP = _maxHP;
     }
     protected override void OnStart()
     {
@@ -125,6 +130,13 @@ public partial class EnemyController : StatePatternBase
         Handles.color = Color.red;
         Handles.DrawWireArc(this.transform.position, Vector3.up, Quaternion.Euler(0f, -_Angle / 2, 0f) * this.transform.forward, _Angle, _radius);
         Handles.DrawSolidArc(this.transform.position, Vector3.up, Quaternion.Euler(0f, -_Angle / 2, 0f) * this.transform.forward, _Angle, 1f);
+    }
+
+    public void Damage(int damage)
+    {
+        _currentHP -= damage;
+
+        Debug.Log($"ダメージを受けた : ダメージ {damage} : 今のHP {_currentHP}");
     }
 
     enum EnemyType

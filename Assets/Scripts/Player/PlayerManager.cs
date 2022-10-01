@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Cinemachine;
 
 public class PlayerManager
 {
@@ -17,6 +18,11 @@ public class PlayerManager
 
     List<WeaponModelData> _modelList = new List<WeaponModelData>();
     WeaponDataBase _dataBase;
+
+    CinemachineVirtualCamera[] _vcamArray;
+    VcamType _currentCameraType = VcamType.FollowCamera;
+
+    public VcamType CameraType => _currentCameraType;
 
     EnemyController _target;
 
@@ -35,6 +41,7 @@ public class PlayerManager
     public void Setup(PlayerManagerAttachment attachment)
     {
         _dataBase = attachment.DataBase;
+        _vcamArray = attachment.CameraArray;
     }
     
     /// <summary>
@@ -88,4 +95,28 @@ public class PlayerManager
     {
         _currentWeapon = data;
     }
+
+    /// <summary>
+    /// カメラを切り替える
+    /// </summary>
+    public void ChangeCamera(VcamType type)
+    {
+        //タイプに応じて使用するカメラのプライオリティを切り替える
+        switch(type)
+        {
+            case VcamType.FollowCamera:
+                _vcamArray[0].MoveToTopOfPrioritySubqueue();
+                break;
+            case VcamType.ParsonCamera:
+                _vcamArray[1].MoveToTopOfPrioritySubqueue();
+                break;
+        }
+
+        _currentCameraType = type;
+    }
+}
+public enum VcamType
+{
+    FollowCamera = 0,
+    ParsonCamera = 1,
 }

@@ -15,8 +15,11 @@ public partial class PlayerController : StatePatternBase
     [SerializeField] WeaponType _weaponType;
     [SerializeField] LayerMask _targetLayer;
     [SerializeField] RectTransform _targetImage;
+    BulletRendering _bulletLine;
     WeaponModelData _weapon;
+    EnemyController _targetEnemy;
     float _shotTimer;
+    bool _isShooting;
 
     //IKä÷åW
     HandIK _handIK;
@@ -42,26 +45,25 @@ public partial class PlayerController : StatePatternBase
         _anim = GetComponent<Animator>();
         _handIK = GetComponent<HandIK>();
         _lookAtIK = GetComponent<LookAtIK>();
+        _bulletLine = GetComponent<BulletRendering>();
         _thisTransform = _chestPosition ? _chestPosition : this.transform;
 
         _currentState = _moveState;
 
-        //Cursor.visible = false;
-        //Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
-
-    protected override void OnStart() 
+    protected override void OnStart()
     {
         _weapon = PlayerManager.Instance.CurrentWeapon;
     }
-    protected override void OnUpdate() 
+    protected override void OnUpdate()
     {
         _isGround = CheckGround();
 
         Shot();
-        TargetLookAt();
+        SetTarget();
     }
-
     /// <summary>
     /// ê›íuîªíË
     /// </summary>
@@ -74,7 +76,7 @@ public partial class PlayerController : StatePatternBase
         var hit = Physics.OverlapSphere(pos, _footPositionRadius, _footObjectLayer);
         bool check = false;
 
-        if(hit.Length > 0)
+        if (hit.Length > 0)
         {
             check = true;
         }
@@ -84,19 +86,33 @@ public partial class PlayerController : StatePatternBase
 
         return check;
     }
-
+    /// <summary>
+    /// éÀåÇä÷êî
+    /// </summary>
     void Shot()
     {
-        if(Input.GetButton("Fire2"))
+        if (Input.GetButton("Fire2"))
         {
             _shotTimer += Time.deltaTime;
+            _isShooting = true;
+
+            PlayerManager.Instance.ChangeCamera(VcamType.ParsonCamera);
+
+            _anim.SetBool("IsLookOn", true);
+        }
+        else
+        {
+            _isShooting = false;
+            PlayerManager.Instance.ChangeCamera(VcamType.FollowCamera);
+
+            _anim.SetBool("IsLookOn", false);
         }
 
         _weapon = PlayerManager.Instance.CurrentWeapon;
 
         if (_weapon == null) return;
 
-        if(_shotTimer >= _weapon.ShotSpeed)
+        if (_shotTimer >= _weapon.ShotSpeed)
         {
             _shotTimer = 0;
 
@@ -104,7 +120,7 @@ public partial class PlayerController : StatePatternBase
 
             if (!PlayerManager.Instance.Target) return;
 
-            var target = PlayerManager.Instance.Target.Center.position;
+            var target = _targetEnemy.Center.position;
             target += Camera.main.transform.TransformDirection(new Vector2(Random.Range(-range, range), Random.Range(-range, range)));
 
             var dir = target - _thisTransform.position;
@@ -113,30 +129,41 @@ public partial class PlayerController : StatePatternBase
 
             var hit = Physics.Raycast(_thisTransform.position, dir, out obj, _weapon.MaxLength, _targetLayer);
 
-            if(hit)
+            if (hit)
             {
                 var damageObj = obj.collider.GetComponent<IDamage>();
                 damageObj.Damage(_weapon.Power);
             }
 
+            var point = hit ? obj.point : dir + _thisTransform.position;
+            _bulletLine.SetActive(true);
+            _bulletLine.BallisticRendering(point);
             Debug.DrawRay(_thisTransform.position, dir.normalized * _weapon.MaxLength, Color.green, 0.1f);
-        }
-    }
 
-    void TargetLookAt()
+            return;
+        }
+
+        _bulletLine.SetActive(false);
+    }
+    /// <summary>
+    /// É^Å[ÉQÉbÉg(ìG)Çê›íË
+    /// </summary>
+    void SetTarget()
     {
         var target = PlayerManager.Instance.Target;
 
         if (target)
         {
-            _lookAtIK.Target = target.Center;
+            if (target != _targetEnemy)
+            {
+                _targetEnemy = target;
+                _lookAtIK.Target = _targetEnemy.Center;
+            }
         }
         else
         {
-            if(_lookAtIK.Target)
-            {
-                _lookAtIK.Target = null;
-            }
+            _lookAtIK.Target = null;
+            _targetEnemy = null;
         }
     }
 

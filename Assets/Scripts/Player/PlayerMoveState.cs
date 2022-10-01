@@ -50,7 +50,7 @@ partial class PlayerController
         }
         void Move()
         {
-            //入力
+            //入力を取得
             var h = Input.GetAxisRaw("Horizontal");
             var v = Input.GetAxisRaw("Vertical");
 
@@ -62,32 +62,47 @@ partial class PlayerController
                 dir = Camera.main.transform.TransformDirection(dir);    // カメラのローカル座標に変換する
                 dir.y = 0;  // y 軸方向はゼロにして水平方向のベクトルにする
 
-                // 入力方向に滑らかに回転させる
-                Quaternion targetRotation = Quaternion.LookRotation(dir);
-                _player.transform.rotation = Quaternion.Lerp(_player.transform.rotation, targetRotation, Time.deltaTime * _player._rotationSpeed);
+                if (!_player._isShooting)
+                {
+                    Rotate(dir);
+                }
+                else
+                {
+                    var vec = Camera.main.transform.forward;
+                    vec.y = 0;
+
+                    Rotate(vec);
+                }
             }
-            //else //カメラの前方向に向かせる
-            //{
-            //    var vec = Camera.main.transform.forward;
-            //    vec.y = 0;
+            else
+            {
+                if(_player._isShooting)
+                {
+                    var vec = Camera.main.transform.forward;
+                    vec.y = 0;
 
-            //    Quaternion targetRotation = Quaternion.LookRotation(vec);
-            //    player.transform.rotation = Quaternion.Lerp(player.transform.rotation, targetRotation, Time.deltaTime * player._rotationSpeed);
-            //}
+                    Rotate(vec);
+                }
+            }
 
-            //var vec = Camera.main.transform.forward;
-            //vec.y = 0;
-
-            //Quaternion targetRotation = Quaternion.LookRotation(vec);
-            //player.transform.rotation = Quaternion.Lerp(player.transform.rotation, targetRotation, Time.deltaTime * player._rotationSpeed);
-
+            //正規化
             dir.Normalize();
 
+            //アニメーションを設定
             _player._anim.SetFloat("IsValue", dir.magnitude, 0.2f, Time.deltaTime);
+            _player._anim.SetFloat("Horizontal", h, 0.2f, Time.deltaTime);
+            _player._anim.SetFloat("Vertical", v, 0.2f, Time.deltaTime);
 
+            //移動ベクトルを設定
             dir *= _player._moveSpeed;
             dir.y = _player._rb.velocity.y;
             _player._rb.velocity = dir;
+        }
+        void Rotate(Vector3 dir)
+        {
+            // 入力方向に滑らかに回転させる
+            Quaternion targetRotation = Quaternion.LookRotation(dir);
+            _player.transform.rotation = Quaternion.Lerp(_player.transform.rotation, targetRotation, Time.deltaTime * _player._rotationSpeed);
         }
 
         void WallRun(PlayerController player)
