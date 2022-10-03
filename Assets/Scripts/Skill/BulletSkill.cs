@@ -5,7 +5,7 @@ using UnityEngine;
 public class BulletSkill : SkillBase
 {
     BulletType? _type = null;
-    BulletBase _prefab;
+    SkillBulletBase _prefab;
     Transform _transform;
 
     /// <summary>
@@ -16,7 +16,7 @@ public class BulletSkill : SkillBase
     /// </summary>
     /// <param name="num">
     /// </param>
-    public BulletSkill(int num, BulletBase prefab, Transform transform)
+    public BulletSkill(int num, SkillBulletBase prefab, Transform transform)
     {
         switch((BulletType)num)
         {

@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// ホーミング弾
 /// </summary>
-public class HomingBullet : BulletBase
+public class HomingBullet : SkillBulletBase
 {
     [Header("HomingBullet")]
 

@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// ’¼ü‚É“®‚­’e
 /// </summary>
-public class StraightBullet : BulletBase
+public class StraightBullet : SkillBulletBase
 {
 
 }
