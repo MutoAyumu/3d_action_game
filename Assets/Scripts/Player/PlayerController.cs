@@ -72,6 +72,7 @@ public partial class PlayerController : MonoBehaviour
     void Start()
     {
         _weapon = PlayerManager.Instance.CurrentWeapon;
+        _bulletLine.enabled = false;
 
         _statePattern = new StatePatternBase<PlayerController>(this);
 

@@ -14,9 +14,6 @@ public partial class EnemyController : MonoBehaviour, IDamage
     [Space(10)]
     [SerializeField] float _rotateSpeed = 5f;
     [Space(10)]
-    [SerializeField, Tooltip("見逃すまでの時間")] float _missTime = 60f;
-    float _missTimer;
-    [Space(10)]
     [SerializeField] Transform _centerPosition;
     [Space(10)]
     [SerializeField] EnemyType _enemyType;
@@ -28,8 +25,13 @@ public partial class EnemyController : MonoBehaviour, IDamage
     [SerializeField] float _moveSpeed = 3f;
     [SerializeField] float _stopDistance = 1f;
 
-    [Header("=== IdleState ===")]
-    [SerializeField, Tooltip("移動するまでの時間")] float _moveUpToTime = 10f;
+    [Header("=== ShotState ===")]
+    [SerializeField, Tooltip("次の行動に遷るまでの時間")] float _moveUpToTime = 4f;
+    [SerializeField] int _power = 10;
+    [SerializeField] float _shotDistance = 0.1f;
+    [SerializeField] SpriteRenderer _markSprite;
+    [SerializeField] BulletRendering _bulletLine;
+
 
     Transform _thisTransform;
     Transform _targetTransform;
@@ -54,13 +56,15 @@ public partial class EnemyController : MonoBehaviour, IDamage
 
     private void Start()
     {
+        _markSprite.enabled = false;
+        _bulletLine.SetActive(false);
         _currentHP = _maxHP;
 
         _statePattern = new StatePatternBase<EnemyController>(this);
 
         _statePattern.Add<EnemyIdleState>((int)StateType.Idle);
         _statePattern.Add<EnemyMoveState>((int)StateType.Move);
-        //_statePattern.Add<EnemyIdleState>((int)StateType.Idle);
+        _statePattern.Add<EnemyShotState>((int)StateType.Shot);
 
         _statePattern.OnStart((int)StateType.Idle);
     }
@@ -74,7 +78,6 @@ public partial class EnemyController : MonoBehaviour, IDamage
         }
         else
         {
-            MissPlayer();
             Rotate();
         }
 
@@ -103,22 +106,6 @@ public partial class EnemyController : MonoBehaviour, IDamage
                 _targetTransform = target.transform;
                 _lookAtIK.Target = target.Center;
             }
-        }
-    }
-
-    /// <summary>
-    /// プレイヤーを見逃す
-    /// </summary>
-    void MissPlayer()
-    {
-        //タイマーを回して一定以上になったら参照をNullにする
-        _missTimer += Time.deltaTime;
-
-        if (_missTimer > _missTime)
-        {
-            _missTimer = 0;
-            _targetTransform = null;
-            _lookAtIK.Target = null;
         }
     }
 
@@ -153,15 +140,16 @@ public partial class EnemyController : MonoBehaviour, IDamage
 
     enum StateType
     {
-        Idle = 0,
-        Move = 1,
-        Shot = 2,
+        Idle = 0, //待機
+        Move = 1, //移動
+        Shot = 2, //射撃
+        Explosion = 3, //爆発
     }
 
     enum EnemyType
     {
-        NormalEnemy = 0,
-        FlyEnemy = 1
+        NormalEnemy = 0, //通常の銃で撃ってくる敵
+        ExplosionEnemy = 1, //突撃して爆発する敵
     }
 
     //ステートの定義
@@ -176,7 +164,7 @@ public partial class EnemyController : MonoBehaviour, IDamage
             var distance = Vector3.Distance(Owner._thisTransform.position, Owner._targetTransform.position);
 
             //一定以上距離が離れていたら近づく
-            if (distance > Owner._radius)
+            if (distance > Owner._stopDistance)
             {
                 //プレイヤーの位置を設定
                 _destinationPoint = Owner._targetTransform;
@@ -186,7 +174,8 @@ public partial class EnemyController : MonoBehaviour, IDamage
         {
             if (!_destinationPoint)
             {
-                StatePattern.ChangeState((int)StateType.Idle);
+                StatePattern.ChangeState((int)StateType.Shot);
+                return;
             }
 
             Move(_destinationPoint);
@@ -212,28 +201,70 @@ public partial class EnemyController : MonoBehaviour, IDamage
 
             if (distance <= Owner._stopDistance)
             {
-                StatePattern.ChangeState((int)StateType.Idle);
+                Owner._rb.velocity = Vector3.zero;
+                StatePattern.ChangeState((int)StateType.Shot);
             }
         }
     }
     public class EnemyIdleState : StateBase
     {
-        float _changeTime;
+        public override void OnUpdate()
+        {
+            if (!Owner._targetTransform)
+            {
+                StatePattern.ChangeState((int)StateType.Shot);
+            }
+        }
+    }
+    public class EnemyShotState : StateBase
+    {
+        float _changeTimer;
+        float _shotTimer;
 
         public override void OnEnter()
         {
-            _changeTime = 0;
+            _changeTimer = 0;
+            Owner._bulletLine.SetActive(true);
         }
-
         public override void OnUpdate()
         {
-            if (!Owner._targetTransform) return;
+            _changeTimer += Time.deltaTime;
+            _shotTimer += Time.deltaTime;
 
-            _changeTime += Time.deltaTime;
-
-            if (_changeTime >= Owner._moveUpToTime)
+            if (_changeTimer >= Owner._moveUpToTime)
             {
                 StatePattern.ChangeState((int)StateType.Move);
+                return;
+            }
+
+            Shot();
+        }
+        public override void OnExit()
+        {
+            Owner._bulletLine.SetActive(false);
+        }
+
+        void Shot()
+        {
+            RaycastHit hit;
+            var ray = Physics.Raycast(Owner._thisTransform.position, Owner._thisTransform.forward, out hit, 100, Owner._targetLayer);
+            var point = ray ? hit.point : Owner._thisTransform.forward * 100;
+            Owner._bulletLine.BallisticRendering(point);
+
+            if (ray)
+            {
+                Owner._markSprite.enabled = true;
+                Owner._markSprite.transform.LookAt(hit.normal);
+            }
+            else
+            {
+                Owner._markSprite.enabled = false;
+            }
+
+            if (_shotTimer >= Owner._shotDistance)
+            {
+                _shotTimer = 0;
+
             }
         }
     }
