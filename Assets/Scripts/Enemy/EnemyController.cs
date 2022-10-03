@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public partial class EnemyController : StatePatternBase, IDamage
+using StateBase = StatePatternBase<EnemyController>.StateBase;
+
+public partial class EnemyController : MonoBehaviour, IDamage
 {
     [Header("基本設定")]
     [SerializeField] float _radius = 3f;
@@ -22,6 +24,13 @@ public partial class EnemyController : StatePatternBase, IDamage
     [SerializeField] int _maxHP = 1000;
     int _currentHP;
 
+    [Header("=== MoveState ===")]
+    [SerializeField] float _moveSpeed = 3f;
+    [SerializeField] float _stopDistance = 1f;
+
+    [Header("=== IdleState ===")]
+    [SerializeField, Tooltip("移動するまでの時間")] float _moveUpToTime = 10f;
+
     Transform _thisTransform;
     Transform _targetTransform;
 
@@ -30,32 +39,33 @@ public partial class EnemyController : StatePatternBase, IDamage
 
     LookAtIK _lookAtIK;
 
-    //State
-    EnemyMoveState _moveState = new EnemyMoveState();
-    EnemyIdleState _idleState = new EnemyIdleState();
+    StatePatternBase<EnemyController> _statePattern;
 
     public Transform Center => _centerPosition;
 
-    protected override void OnAwake()
+    void Awake()
     {
         //キャッシュ
         _thisTransform = this.transform;
-
         _lookAtIK = GetComponent<LookAtIK>();
         _rb = GetComponent<Rigidbody>();
         _anim = GetComponent<Animator>();
-
-        //現在のステートをMoveStateにする
-        _currentState = _idleState;
-
-        _currentHP = _maxHP;
     }
-    protected override void OnStart()
+
+    private void Start()
     {
-        _moveState.OnInit(this);
-        _idleState.OnInit(this);
+        _currentHP = _maxHP;
+
+        _statePattern = new StatePatternBase<EnemyController>(this);
+
+        _statePattern.Add<EnemyIdleState>((int)StateType.Idle);
+        _statePattern.Add<EnemyMoveState>((int)StateType.Move);
+        //_statePattern.Add<EnemyIdleState>((int)StateType.Idle);
+
+        _statePattern.OnStart((int)StateType.Idle);
     }
-    protected override void OnUpdate()
+
+    void Update()
     {
         //プレイヤーを見つけていない時
         if (!_targetTransform)
@@ -67,6 +77,8 @@ public partial class EnemyController : StatePatternBase, IDamage
             MissPlayer();
             Rotate();
         }
+
+        _statePattern.OnUpdate();
     }
 
     /// <summary>
@@ -102,7 +114,7 @@ public partial class EnemyController : StatePatternBase, IDamage
         //タイマーを回して一定以上になったら参照をNullにする
         _missTimer += Time.deltaTime;
 
-        if(_missTimer > _missTime)
+        if (_missTimer > _missTime)
         {
             _missTimer = 0;
             _targetTransform = null;
@@ -139,9 +151,90 @@ public partial class EnemyController : StatePatternBase, IDamage
         Debug.Log($"ダメージを受けた : ダメージ {damage} : 今のHP {_currentHP}");
     }
 
+    enum StateType
+    {
+        Idle = 0,
+        Move = 1,
+        Shot = 2,
+    }
+
     enum EnemyType
     {
         NormalEnemy = 0,
         FlyEnemy = 1
+    }
+
+    //ステートの定義
+
+    public class EnemyMoveState : StateBase
+    {
+        //移動先の座標
+        Transform _destinationPoint;
+
+        public override void OnEnter()
+        {
+            var distance = Vector3.Distance(Owner._thisTransform.position, Owner._targetTransform.position);
+
+            //一定以上距離が離れていたら近づく
+            if (distance > Owner._radius)
+            {
+                //プレイヤーの位置を設定
+                _destinationPoint = Owner._targetTransform;
+            }
+        }
+        public override void OnUpdate()
+        {
+            if (!_destinationPoint)
+            {
+                StatePattern.ChangeState((int)StateType.Idle);
+            }
+
+            Move(_destinationPoint);
+        }
+
+        public override void OnExit()
+        {
+            _destinationPoint = null;
+        }
+
+        /// <summary>
+        /// 指定座標まで移動する
+        /// </summary>
+        /// <param name="position"></param>
+        void Move(Transform transform)
+        {
+            var dir = _destinationPoint.position - Owner._thisTransform.position;
+            dir.y = Owner._thisTransform.position.y;
+
+            Owner._rb.velocity = dir.normalized * Owner._moveSpeed;
+
+            var distance = Vector3.Distance(Owner._thisTransform.position, Owner._targetTransform.position);
+
+            if (distance <= Owner._stopDistance)
+            {
+                StatePattern.ChangeState((int)StateType.Idle);
+            }
+        }
+    }
+    public class EnemyIdleState : StateBase
+    {
+        float _changeTime;
+
+        public override void OnEnter()
+        {
+            _changeTime = 0;
+        }
+
+        public override void OnUpdate()
+        {
+            if (!Owner._targetTransform) return;
+
+            _changeTime += Time.deltaTime;
+
+            if (_changeTime >= Owner._moveUpToTime)
+            {
+                StatePattern.ChangeState((int)StateType.Move);
+            }
+        }
     }
 }
