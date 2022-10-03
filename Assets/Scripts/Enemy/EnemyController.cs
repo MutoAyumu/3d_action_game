@@ -14,7 +14,7 @@ public partial class EnemyController : MonoBehaviour, IDamage
     [Space(10)]
     [SerializeField] float _rotateSpeed = 5f;
     [Space(10)]
-    [SerializeField] Transform _centerPosition;
+    [SerializeField] Transform _centerTransform;
     [Space(10)]
     [SerializeField] EnemyType _enemyType;
     [Space(10)]
@@ -43,7 +43,7 @@ public partial class EnemyController : MonoBehaviour, IDamage
 
     StatePatternBase<EnemyController> _statePattern;
 
-    public Transform Center => _centerPosition;
+    public Transform Center => _centerTransform;
 
     void Awake()
     {
@@ -247,14 +247,15 @@ public partial class EnemyController : MonoBehaviour, IDamage
         void Shot()
         {
             RaycastHit hit;
-            var ray = Physics.Raycast(Owner._thisTransform.position, Owner._thisTransform.forward, out hit, 100, Owner._targetLayer);
-            var point = ray ? hit.point : Owner._thisTransform.forward * 100;
+            var ray = Physics.Raycast(Owner._centerTransform.position, Owner._centerTransform.forward, out hit, 100, Owner._targetLayer);
+            var point = ray ? hit.point : Owner._centerTransform.forward * 100;
             Owner._bulletLine.BallisticRendering(point);
 
             if (ray)
             {
                 Owner._markSprite.enabled = true;
-                Owner._markSprite.transform.LookAt(hit.normal);
+                Owner._markSprite.transform.position = hit.point;
+                Owner._markSprite.transform.rotation = Quaternion.LookRotation(hit.normal);
             }
             else
             {
@@ -264,7 +265,6 @@ public partial class EnemyController : MonoBehaviour, IDamage
             if (_shotTimer >= Owner._shotDistance)
             {
                 _shotTimer = 0;
-
             }
         }
     }
