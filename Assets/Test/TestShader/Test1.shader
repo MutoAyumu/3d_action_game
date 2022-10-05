@@ -1,54 +1,44 @@
 Shader "Custom/Test1"
 {
-	SubShader
-	{
-		Tags { "RenderType" = "Opaque" "Queue" = "Geometry"}
-		ZWrite Off
-		Blend SrcAlpha OneMinusSrcAlpha
+    // プロパティ
+    Properties{
+        // テクスチャ
+        _MainTex("Base(RGB)", 2D) = "white" {}
+    }
 
-		Pass
-		{
-            Stencil {
-                Ref 2
-                Comp always
-                Pass replace
-                ZFail decrWrap
-            }
+        // Shaderの中身を記述
+        SubShader{
+        // 不透明なオブジェクト
+        Tags { "RenderType" = "Transparent" }
+        // ステンシル
+        Stencil {
+                // バッファに書き込む値
+                Ref 1
+                // 常に
+                Comp notequal
+        // バッファに書き込む
+        Pass replace
+    }
 
-			CGPROGRAM
-		   #pragma vertex vert
-		   #pragma fragment frag
+        // cg言語記述
+        CGPROGRAM
+        // 拡散、透過
+        #pragma surface surf Lambert alpha
 
-		   #include "UnityCG.cginc"
+        // Input構造体
+        struct Input {
+        // テクスチャ
+        float2 uv_MainTex;
+    };
 
-			struct appdata
-			{
-				float4 vertex : POSITION;
-			};
-
-			struct v2f
-			{
-				float4 vertex : SV_POSITION;
-			};
-
-			v2f vert(appdata v)
-			{
-				v2f o;
-				o.vertex = UnityObjectToClipPos(v.vertex);
-				return o;
-			}
-			// 頂点シェーダー
-			float4 vert(float4 vertex : POSITION) : SV_POSITION
-			{
-				return UnityObjectToClipPos(vertex);
-			}
-
-			fixed4 frag(v2f i) : SV_Target
-			{
-				// 透明にする
-				return fixed4(0, 0, 0, 0);
-			}
-			ENDCG
-		}
-	}
+    // surf関数
+    void surf(Input IN, inout SurfaceOutput o) {
+        o.Albedo = fixed3(0, 0, 0);
+        o.Alpha = 0.5f;
+    }
+    // Shaderの記述終了
+    ENDCG
+    }
+        // SubShaderが失敗した時に呼ばれる
+        FallBack "Diffuse"
 }
