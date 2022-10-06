@@ -1,49 +1,49 @@
-Shader "Custom/Test2"
+ï»¿Shader "Custom/Test2"
 {
-    // ƒvƒƒpƒeƒB
+    // ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
     Properties{
-        // ƒeƒNƒXƒ`ƒƒ
+        // ãƒ†ã‚¯ã‚¹ãƒãƒ£
         _MainTex("Base(RGB)", 2D) = "white" {}
     }
 
-        // Shader‚Ì’†g‚ğ‹Lq
+        // Shaderã®ä¸­èº«ã‚’è¨˜è¿°
         SubShader{
-        // ˆê”Ê“I‚ÈShader‚ğg—p
-        Tags { "RenderType" = "Opaque + 1" }
-        // ƒXƒeƒ“ƒVƒ‹
+        // ä¸€èˆ¬çš„ãªShaderã‚’ä½¿ç”¨
+        Tags {"Queue" = "Geomet+1" "RenderType" = "Opaque" }
+        // ã‚¹ãƒ†ãƒ³ã‚·ãƒ«
         Stencil {
-                // ƒoƒbƒtƒ@‚É‘‚«‚Ş’l
+                // ãƒãƒƒãƒ•ã‚¡ã«æ›¸ãè¾¼ã‚€å€¤
                 Ref 1
-                // ƒoƒbƒtƒ@‚ª“™‚µ‚¢‚©
+                // ãƒãƒƒãƒ•ã‚¡ãŒç­‰ã—ã„ã‹
                 Comp notequal
-        // ƒoƒbƒtƒ@‚É•Û
+        // ãƒãƒƒãƒ•ã‚¡ã«ä¿æŒ
         Pass keep
     }
 
-        // cgŒ¾Œê‹Lq
+        // cgè¨€èªè¨˜è¿°
         CGPROGRAM
-        // ŠgU
+        // æ‹¡æ•£
         #pragma surface surf Lambert
 
-        // ƒeƒNƒXƒ`ƒƒ
+        // ãƒ†ã‚¯ã‚¹ãƒãƒ£
         sampler2D _MainTex;
 
-    // Input\‘¢‘Ì
+    // Inputæ§‹é€ ä½“
     struct Input {
-        // ƒeƒNƒXƒ`ƒƒ
+        // ãƒ†ã‚¯ã‚¹ãƒãƒ£
         float2 uv_MainTex;
     };
 
-    // surfŠÖ”
+    // surfé–¢æ•°
     void surf(Input IN, inout SurfaceOutput o) {
-        // ƒeƒNƒXƒ`ƒƒ‚ÌƒsƒNƒZƒ‹‚ÌF‚ğ•Ô‚·
+        // ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ãƒ”ã‚¯ã‚»ãƒ«ã®è‰²ã‚’è¿”ã™
         half4 c = tex2D(_MainTex, IN.uv_MainTex);
         o.Albedo = c.rgb;
         o.Alpha = c.a;
     }
-    // Shader‚Ì‹LqI—¹
+    // Shaderã®è¨˜è¿°çµ‚äº†
     ENDCG
     }
-        // SubShader‚ª¸”s‚µ‚½‚ÉŒÄ‚Î‚ê‚é
+        // SubShaderãŒå¤±æ•—ã—ãŸæ™‚ã«å‘¼ã°ã‚Œã‚‹
         FallBack "Diffuse"
 }

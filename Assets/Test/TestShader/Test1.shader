@@ -1,44 +1,44 @@
-Shader "Custom/Test1"
+ï»¿Shader "Custom/Test1"
 {
-    // ƒvƒƒpƒeƒB
+    // ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
     Properties{
-        // ƒeƒNƒXƒ`ƒƒ
+        // ãƒ†ã‚¯ã‚¹ãƒãƒ£
         _MainTex("Base(RGB)", 2D) = "white" {}
     }
 
-        // Shader‚Ì’†g‚ğ‹Lq
+        // Shaderã®ä¸­èº«ã‚’è¨˜è¿°
         SubShader{
-        // •s“§–¾‚ÈƒIƒuƒWƒFƒNƒg
-        Tags { "RenderType" = "Transparent" }
-        // ƒXƒeƒ“ƒVƒ‹
+        // ä¸é€æ˜ãªã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+        Tags { "RenderType" = "Transparent"  "ForceNoShadowCasting" = "True"}
+        // ã‚¹ãƒ†ãƒ³ã‚·ãƒ«
         Stencil {
-                // ƒoƒbƒtƒ@‚É‘‚«‚Ş’l
+                // ãƒãƒƒãƒ•ã‚¡ã«æ›¸ãè¾¼ã‚€å€¤
                 Ref 1
-                // í‚É
-                Comp notequal
-        // ƒoƒbƒtƒ@‚É‘‚«‚Ş
+                // å¸¸ã«
+                Comp always
+        // ãƒãƒƒãƒ•ã‚¡ã«æ›¸ãè¾¼ã‚€
         Pass replace
     }
 
-        // cgŒ¾Œê‹Lq
+        // cgè¨€èªè¨˜è¿°
         CGPROGRAM
-        // ŠgUA“§‰ß
+        // æ‹¡æ•£ã€é€é
         #pragma surface surf Lambert alpha
 
-        // Input\‘¢‘Ì
+        // Inputæ§‹é€ ä½“
         struct Input {
-        // ƒeƒNƒXƒ`ƒƒ
+        // ãƒ†ã‚¯ã‚¹ãƒãƒ£
         float2 uv_MainTex;
     };
 
-    // surfŠÖ”
+    // surfé–¢æ•°
     void surf(Input IN, inout SurfaceOutput o) {
         o.Albedo = fixed3(0, 0, 0);
         o.Alpha = 0.5f;
     }
-    // Shader‚Ì‹LqI—¹
+    // Shaderã®è¨˜è¿°çµ‚äº†
     ENDCG
     }
-        // SubShader‚ª¸”s‚µ‚½‚ÉŒÄ‚Î‚ê‚é
+        // SubShaderãŒå¤±æ•—ã—ãŸæ™‚ã«å‘¼ã°ã‚Œã‚‹
         FallBack "Diffuse"
 }
