@@ -7,14 +7,14 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Test2
-  m_Shader: {fileID: 4800000, guid: a78211e46cfd0f745ad56527f9efe7fa, type: 3}
+  m_Name: StencilObject
+  m_Shader: {fileID: 4800000, guid: 7f5366d12110436428e14c8fc81f6fd2, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2001
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
