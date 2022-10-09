@@ -12,9 +12,11 @@ Shader "Custom/StencilObject"
         //Tagの指定
         Tags
         {
-            "Queue" = "Geometry+1"
+            "Queue" = "Geometry"
             "RenderType" = "Opaque"
         }
+
+        LOD 200
 
         //ステンシル
         Stencil

@@ -13,10 +13,13 @@ Shader "Custom/StencilMask"
         // 不透明なオブジェクト
         Tags 
         {
-            "Queue" = "Geometry+1"
+            "Queue" = "Geometry"
             "RenderType" = "Transparent"
             "ForceNoShadowCasting" = "True"
         }
+
+        LOD 200
+
         // ステンシル
         Stencil 
         {
