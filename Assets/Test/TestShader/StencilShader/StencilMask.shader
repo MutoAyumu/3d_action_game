@@ -13,17 +13,21 @@ Shader "Custom/StencilMask"
         // 不透明なオブジェクト
         Tags 
         {
-            "Queue" = "Geometry+1"
+            "Queue" = "Geometry"
             "RenderType" = "Transparent"
             "ForceNoShadowCasting" = "True"
         }
+
+        ZTest always
+        LOD 200
+
         // ステンシル
         Stencil 
         {
             // バッファに書き込む値
             Ref 1
             // 常に
-            Comp always
+            Comp Gequal
             // バッファに書き込む
             Pass replace
         }

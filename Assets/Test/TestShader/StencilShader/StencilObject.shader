@@ -16,6 +16,9 @@ Shader "Custom/StencilObject"
             "RenderType" = "Opaque"
         }
 
+        ZTest always
+        LOD 200
+
         //ステンシル
         Stencil
         {
