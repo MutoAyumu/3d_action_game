@@ -18,6 +18,7 @@ Shader "Custom/StencilMask"
             "ForceNoShadowCasting" = "True"
         }
 
+        ZTest always
         LOD 200
 
         // ステンシル
@@ -26,7 +27,7 @@ Shader "Custom/StencilMask"
             // バッファに書き込む値
             Ref 1
             // 常に
-            Comp always
+            Comp Gequal
             // バッファに書き込む
             Pass replace
         }

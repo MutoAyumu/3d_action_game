@@ -12,10 +12,11 @@ Shader "Custom/StencilObject"
         //Tagの指定
         Tags
         {
-            "Queue" = "Geometry"
+            "Queue" = "Geometry+1"
             "RenderType" = "Opaque"
         }
 
+        ZTest always
         LOD 200
 
         //ステンシル
