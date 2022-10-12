@@ -1,56 +1,95 @@
-Shader "Custom/StencilMask"
+Shader "Custom/Stencil/StencilMask"
 {
-    // プロパティ
-    Properties 
+    SubShader
     {
-        // テクスチャ
-        _MainTex ("Base(RGB)", 2D) = "white" {}
-        _Alpha ("Alpha", Range(0.0,1.0)) = 0.5
+        Tags { "RenderType"="Transparent"}
+        ZWrite On
+        Blend SrcAlpha OneMinusSrcAlpha
+
+        LOD 200
+
+        //穴を開けるパス
+        Pass
+        {
+            ZTest GEqual
+
+            Stencil
+            {
+                // ステンシルの番号
+                Ref 2
+                
+                // Always: このシェーダでレンダリングされたピクセルのステンシルバッファを「対象」とするという意味
+                Comp Always
+                
+                // Replace: 「対象」としたステンシルバッファにRefの値を書き込む、という意味
+                Pass Replace
+            }
+
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            
+            #include "UnityCG.cginc"
+
+            struct appdata
+            {
+                float4 vertex : POSITION;
+            };
+
+            struct v2f
+            {
+                float4 vertex : SV_POSITION;
+            };
+            
+            v2f vert (appdata v)
+            {
+                v2f o;
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                return o;
+            }
+            
+            fixed4 frag (v2f i) : SV_Target
+            {
+                // 透明にする
+                return fixed4(0, 0, 0, 0);
+            }
+            ENDCG
+        }
+
+        //穴を開けないパス
+        Pass
+        {
+            ZTest Lequal
+
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            
+            #include "UnityCG.cginc"
+
+            struct appdata
+            {
+                float4 vertex : POSITION;
+            };
+
+            struct v2f
+            {
+                float4 vertex : SV_POSITION;
+            };
+            
+            v2f vert (appdata v)
+            {
+                v2f o;
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                return o;
+            }
+            
+            fixed4 frag (v2f i) : SV_Target
+            {
+                // 透明にする
+                return fixed4(0, 0, 0, 0);
+            }
+            ENDCG
+        }
     }
-
-    SubShader 
-    {
-        // 不透明なオブジェクト
-        Tags 
-        {
-            "Queue" = "Geometry+1"
-            "RenderType" = "Transparent"
-            "ForceNoShadowCasting" = "True"
-        }
-        // ステンシル
-        Stencil 
-        {
-            // バッファに書き込む値
-            Ref 1
-            // 常に描画
-            Comp always
-            // バッファに書き込む
-            Pass replace
-        }
-
-        CGPROGRAM
-
-        #pragma surface surf Lambert alpha
-
-        half _Alpha;
-
-        // Input構造体
-        struct Input 
-        {
-            // テクスチャ
-            float2 uv_MainTex;
-        };
-
-        // surf関数
-        void surf (Input IN, inout SurfaceOutput o)
-        {
-            //完全に透明だと分かりにくいから少し色をつける
-            o.Albedo = fixed3(0, 0, 0);
-            o.Alpha = _Alpha;
-        }
-        // Shaderの記述終了
-        ENDCG
-    }
-    // SubShaderが失敗した時に呼ばれる
-    FallBack "Diffuse"
 }

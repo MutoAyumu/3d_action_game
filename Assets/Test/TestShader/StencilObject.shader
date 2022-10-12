@@ -1,4 +1,4 @@
-Shader "Custom/s"
+Shader "Custom/Stencil/StencilObject"
 {
     Properties
     {
