@@ -210,7 +210,7 @@ public partial class EnemyController : MonoBehaviour, IDamage
     {
         public override void OnUpdate()
         {
-            if (!Owner._targetTransform)
+            if (Owner._targetTransform)
             {
                 StatePattern.ChangeState((int)StateType.Shot);
             }

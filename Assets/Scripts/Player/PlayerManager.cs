@@ -22,6 +22,8 @@ public class PlayerManager
     CinemachineVirtualCamera[] _vcamArray;
     VcamType _currentCameraType = VcamType.FollowCamera;
 
+    PlayerController _player;
+
     public VcamType CameraType => _currentCameraType;
 
     EnemyController _target;
@@ -42,6 +44,7 @@ public class PlayerManager
     {
         _dataBase = attachment.DataBase;
         _vcamArray = attachment.CameraArray;
+        _player = attachment.Player;
     }
     
     /// <summary>
@@ -94,6 +97,7 @@ public class PlayerManager
     public void ChangeWeapon(WeaponModelData data)
     {
         _currentWeapon = data;
+        _player.SetWeapon(_currentWeapon);
     }
 
     /// <summary>

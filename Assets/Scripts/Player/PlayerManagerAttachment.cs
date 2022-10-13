@@ -17,6 +17,9 @@ public class PlayerManagerAttachment : MonoBehaviour
     CinemachinePOV _3rdParsonPOV;
     Cinemachine3rdPersonFollow a;
 
+    PlayerController _player;
+    public PlayerController Player => _player;
+
     public CinemachineVirtualCamera[] CameraArray => _vcam;
 
     [Header("Debug")]
@@ -25,9 +28,11 @@ public class PlayerManagerAttachment : MonoBehaviour
 
     private void Awake()
     {
-        PlayerManager.Instance.Setup(this);
         _followPOV = _vcam[0].GetCinemachineComponent(CinemachineCore.Stage.Aim).GetComponent<CinemachinePOV>();
         _3rdParsonPOV = _vcam[1].GetCinemachineComponent(CinemachineCore.Stage.Aim).GetComponent<CinemachinePOV>();
+        _player = FindObjectOfType<PlayerController>();
+
+        PlayerManager.Instance.Setup(this);
     }
     private void Start()
     {
