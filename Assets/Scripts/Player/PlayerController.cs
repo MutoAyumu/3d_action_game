@@ -140,6 +140,8 @@ public partial class PlayerController : MonoBehaviour
             //武器データがNullだったらreturn
             if (_weapon == null) return;
 
+            _isShooting = true;
+
             _shotTimer += Time.deltaTime;
 
             //タイマーが武器の射撃速度以上になったら
@@ -173,15 +175,15 @@ public partial class PlayerController : MonoBehaviour
 
                 //Hitに応じてLineRendererの座標を変える
                 var point = hit ? obj.point : dir + _thisTransform.position;
-                _bulletLine.SetActive(true);
+                _bulletLine.SetEnabled(true);
                 //LineRendererの座標を設定
                 _bulletLine.BallisticRendering(point);
                 Debug.DrawRay(_thisTransform.position, dir.normalized * _weapon.MaxLength, Color.green, 0.1f);
-
-                //return;
             }
-
-            _bulletLine.SetActive(false);
+        }
+        else
+        {
+            _bulletLine.SetEnabled(false);
         }
     }
 
@@ -327,7 +329,7 @@ public partial class PlayerController : MonoBehaviour
                 dir = Camera.main.transform.TransformDirection(dir);    // カメラのローカル座標に変換する
                 dir.y = 0;  // y 軸方向はゼロにして水平方向のベクトルにする
 
-                if (Owner._lookType == LookType.Follow)
+                if (Owner._lookType == LookType.Follow && !Owner._isShooting)
                 {
                     Rotate(dir);
                 }
@@ -386,7 +388,8 @@ public partial class PlayerController : MonoBehaviour
 
             return hit;
         }
-        #endregion
     }
+    #endregion
+
     #endregion
 }
