@@ -8,8 +8,7 @@ public class WeaponButton : MonoBehaviour
     [SerializeField] Text _text;
     [SerializeField]Image _image;
 
-    int _id;
-    WeaponType _type;
+    WeaponModelData _data;
 
     private void Awake()
     {
@@ -20,11 +19,10 @@ public class WeaponButton : MonoBehaviour
 
     public void OnSetData(WeaponModelData data)
     {
-        _id = data.ID;
-        _type = data.Type;
+        _data = data;
         _text.text = data.Name;
 
-        SetTypeIcon(_type);
+        SetTypeIcon(_data.Type);
     }
 
     void SetTypeIcon(WeaponType type)
@@ -50,7 +48,11 @@ public class WeaponButton : MonoBehaviour
     /// </summary>
     public void ChangeData()
     {
-        var data = PlayerManager.Instance.GetModelData(_id, _type);
-        PlayerManager.Instance.ChangeWeapon(data);
+        PlayerManager.Instance.ChangeWeapon(_data);
+    }
+
+    public void ChangeSelectData()
+    {
+        PlayerManager.Instance.SelectWeaponButton(_data);
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using Cinemachine;
+using UniRx;
 
 public class PlayerManager
 {
@@ -29,11 +30,14 @@ public class PlayerManager
     EnemyController _target;
 
     WeaponModelData _currentWeapon;
+    ReactiveProperty<WeaponModelData> _currentSelectButton;
 
     /// <summary>
     /// 現在使っている武器
     /// </summary>
     public WeaponModelData CurrentWeapon => _currentWeapon;
+
+    public IReadOnlyReactiveProperty<WeaponModelData> CurrentSelectButton => _currentSelectButton;
 
     /// <summary>
     /// コンストラクタ
@@ -45,6 +49,8 @@ public class PlayerManager
         _dataBase = attachment.DataBase;
         _vcamArray = attachment.CameraArray;
         _player = attachment.Player;
+
+        _currentSelectButton = new ReactiveProperty<WeaponModelData>();
     }
     
     /// <summary>
@@ -98,6 +104,11 @@ public class PlayerManager
     {
         _currentWeapon = data;
         _player.SetWeapon(_currentWeapon);
+    }
+
+    public void SelectWeaponButton(WeaponModelData data)
+    {
+        _currentSelectButton.Value = data;
     }
 
     /// <summary>

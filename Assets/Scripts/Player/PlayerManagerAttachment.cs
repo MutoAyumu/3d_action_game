@@ -62,7 +62,9 @@ public class PlayerManagerAttachment : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.O))
         {
-            PlayerManager.Instance.CreateData(_data[1].Name, _data[1].Type);
+            var n = Random.Range(1, _data.Length);
+
+            PlayerManager.Instance.CreateData(_data[n].Name, _data[n].Type);
         }
 
         MatchCameraSettings();
