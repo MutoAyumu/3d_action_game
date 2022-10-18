@@ -52,7 +52,7 @@ public class BulletRendering : MonoBehaviour
     /// コンポーネントのオンオフを切り替える
     /// </summary>
     /// <param name="flag"></param>
-    public void SetActive(bool flag)
+    public void SetEnabled(bool flag)
     {
         _line.enabled = flag;
     }

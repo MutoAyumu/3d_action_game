@@ -6,30 +6,46 @@ using StateBase = StatePatternBase<PlayerController>.StateBase;
 
 public partial class PlayerController : MonoBehaviour
 {
+    #region 設置判定関係の変数
     [Header("=== 設置判定 ===")]
     [SerializeField] Transform _footPosition;
     [SerializeField] float _footPositionRadius = 0.5f;
     [SerializeField] LayerMask _footObjectLayer;
     bool _isGround;
 
+    /// <summary>
+    /// 設置判定用プロパティ
+    /// </summary>
+    bool IsGround => _isGround;
+    #endregion
+
+    #region 射撃関係の変数
     [Header("=== 射撃関係 ===")]
     [SerializeField] int _weaponID = 0;
     [SerializeField] WeaponType _weaponType;
     [SerializeField] LayerMask _targetLayer;
     [SerializeField] RectTransform _targetImage;
+    [Space(5)]
+    [SerializeField] SpriteRenderer _stencilMask;
+    
     BulletRendering _bulletLine;
     WeaponModelData _weapon;
     EnemyController _targetEnemy;
     float _shotTimer;
+    LookType _lookType;
     bool _isShooting;
+    #endregion
 
+    #region ステート関係の変数
     [Header("=== JumpState ===")]
     [SerializeField] float _jumpPower = 5f;
     [SerializeField] float _changeStateTime = 0.5f;
 
     [Header("=== MoveState ===")]
-    [SerializeField, Tooltip("移動スピード")] float _moveSpeed = 5f;
+    [SerializeField, Tooltip("通常移動スピード")] float _moveSpeed = 5f;
+    [SerializeField, Tooltip("覗き込み移動スピード")] float _peekMoveSpeed = 2f;
     [SerializeField, Tooltip("回転の滑らかさ")] float _rotationSpeed = 5f;
+    #endregion
 
     [Space(5)]
 
@@ -48,15 +64,11 @@ public partial class PlayerController : MonoBehaviour
 
     StatePatternBase<PlayerController> _statePattern;
 
-    /// <summary>
-    /// 設置判定用プロパティ
-    /// </summary>
-    bool IsGround => _isGround;
-
     Rigidbody _rb;
     Animator _anim;
     Transform _thisTransform;
 
+    #region 基本的なイベント関数
     void Awake()
     {
         _rb = GetComponent<Rigidbody>();
@@ -71,7 +83,6 @@ public partial class PlayerController : MonoBehaviour
     }
     void Start()
     {
-        _weapon = PlayerManager.Instance.CurrentWeapon;
         _bulletLine.enabled = false;
 
         _statePattern = new StatePatternBase<PlayerController>(this);
@@ -86,10 +97,14 @@ public partial class PlayerController : MonoBehaviour
         _isGround = CheckGround();
 
         Shot();
+        LookForward();
         SetTarget();
 
         _statePattern.OnUpdate();
     }
+    #endregion
+
+    #region 設置判定関係の関数
     /// <summary>
     /// 設置判定
     /// </summary>
@@ -112,65 +127,106 @@ public partial class PlayerController : MonoBehaviour
 
         return check;
     }
+    #endregion
+
+    #region 射撃関係の関数
     /// <summary>
     /// 射撃関数
     /// </summary>
     void Shot()
     {
-        if (Input.GetButton("Fire2"))
+        if (Input.GetButton("Fire1"))
         {
-            _shotTimer += Time.deltaTime;
+            //武器データがNullだったらreturn
+            if (_weapon == null) return;
+
             _isShooting = true;
 
+            _shotTimer += Time.deltaTime;
+
+            //タイマーが武器の射撃速度以上になったら
+            if (_shotTimer >= _weapon.ShotSpeed)
+            {
+                _shotTimer = 0;
+
+                //ターゲットがNullだったらreturn
+                if (!_targetEnemy) return;
+
+                var range = _weapon.Range;
+                var target = _targetEnemy.Center.position;
+
+                //ターゲットを起点にランダムな座標を作る
+                target += new Vector3(Random.Range(-range, range), Random.Range(-range, range));
+
+                //RayCastで使う方向ベクトルを作る
+                var dir = target - _thisTransform.position;
+
+                //Hitしたオブジェクトの情報を保持しておく
+                RaycastHit obj;
+
+                var hit = Physics.Raycast(_thisTransform.position, dir, out obj, _weapon.MaxLength, _targetLayer);
+
+                if (hit)
+                {
+                    //当たった対象にダメージを与える
+                    var damageObj = obj.collider.GetComponent<IDamage>();
+                    damageObj.Damage(_weapon.Power);
+                }
+
+                //Hitに応じてLineRendererの座標を変える
+                var point = hit ? obj.point : dir + _thisTransform.position;
+                _bulletLine.SetEnabled(true);
+                //LineRendererの座標を設定
+                _bulletLine.BallisticRendering(point);
+                Debug.DrawRay(_thisTransform.position, dir.normalized * _weapon.MaxLength, Color.green, 0.1f);
+            }
+        }
+        else
+        {
+            _bulletLine.SetEnabled(false);
+        }
+    }
+
+    /// <summary>
+    /// 覗き込む
+    /// </summary>
+    void LookForward()
+    {
+        //右クリックで覗き込む
+        if (Input.GetButton("Fire2"))
+        {
+            if (_lookType == LookType.Peek) return;
+
+            //タイプの変更
+            _lookType = LookType.Peek;
+
+            //カメラを切り替える
             PlayerManager.Instance.ChangeCamera(VcamType.ParsonCamera);
 
+            //アニメーションのパラメータを変更
             _anim.SetBool("IsLookOn", true);
         }
         else
         {
-            _isShooting = false;
+            if (_lookType == LookType.Follow) return;
+
+            _lookType = LookType.Follow;
+
             PlayerManager.Instance.ChangeCamera(VcamType.FollowCamera);
 
             _anim.SetBool("IsLookOn", false);
         }
-
-        _weapon = PlayerManager.Instance.CurrentWeapon;
-
-        if (_weapon == null) return;
-
-        if (_shotTimer >= _weapon.ShotSpeed)
-        {
-            _shotTimer = 0;
-
-            var range = _weapon.Range;
-
-            if (!PlayerManager.Instance.Target) return;
-
-            var target = _targetEnemy.Center.position;
-            target += Camera.main.transform.TransformDirection(new Vector2(Random.Range(-range, range), Random.Range(-range, range)));
-
-            var dir = target - _thisTransform.position;
-
-            RaycastHit obj;
-
-            var hit = Physics.Raycast(_thisTransform.position, dir, out obj, _weapon.MaxLength, _targetLayer);
-
-            if (hit)
-            {
-                var damageObj = obj.collider.GetComponent<IDamage>();
-                damageObj.Damage(_weapon.Power);
-            }
-
-            var point = hit ? obj.point : dir + _thisTransform.position;
-            _bulletLine.SetActive(true);
-            _bulletLine.BallisticRendering(point);
-            Debug.DrawRay(_thisTransform.position, dir.normalized * _weapon.MaxLength, Color.green, 0.1f);
-
-            return;
-        }
-
-        _bulletLine.SetActive(false);
     }
+
+    /// <summary>
+    /// 武器データを設定する
+    /// </summary>
+    /// <param name="data"></param>
+    public void SetWeapon(WeaponModelData data)
+    {
+        _weapon = data;
+    }
+
     /// <summary>
     /// ターゲット(敵)を設定
     /// </summary>
@@ -192,6 +248,9 @@ public partial class PlayerController : MonoBehaviour
             _targetEnemy = null;
         }
     }
+    #endregion
+
+    #region Gizmo
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;
@@ -203,15 +262,29 @@ public partial class PlayerController : MonoBehaviour
         Gizmos.DrawRay(chest, -transform.right * _wallRayLength);
         //Gizmos.DrawRay(, -transform.right * _wallRayLength);
     }
+    #endregion
 
+    #region Enum
     enum StateType
     {
         Move = 0,
         Jump = 1,
     }
 
+    enum LookType
+    {
+        //通常
+        Follow = 0,
+        //覗き込み
+        Peek = 1,
+    }
+    #endregion
+
+    #region ステート関係
+
     //ステートの定義
 
+    #region ジャンプステート
     public class PlayerJumpState : StateBase
     {
         public override void OnEnter()
@@ -228,7 +301,9 @@ public partial class PlayerController : MonoBehaviour
             Owner._rb.AddForce(Vector3.up * Owner._jumpPower, ForceMode.VelocityChange);
         }
     }
+    #endregion
 
+    #region 移動ステート
     public class PlayerMoveState : StateBase
     {
         public override void OnUpdate()
@@ -254,7 +329,7 @@ public partial class PlayerController : MonoBehaviour
                 dir = Camera.main.transform.TransformDirection(dir);    // カメラのローカル座標に変換する
                 dir.y = 0;  // y 軸方向はゼロにして水平方向のベクトルにする
 
-                if (!Owner._isShooting)
+                if (Owner._lookType == LookType.Follow && !Owner._isShooting)
                 {
                     Rotate(dir);
                 }
@@ -268,7 +343,7 @@ public partial class PlayerController : MonoBehaviour
             }
             else
             {
-                if (Owner._isShooting)
+                if (Owner._lookType == LookType.Peek)
                 {
                     var vec = Camera.main.transform.forward;
                     vec.y = 0;
@@ -286,7 +361,8 @@ public partial class PlayerController : MonoBehaviour
             Owner._anim.SetFloat("Vertical", v, 0.2f, Time.deltaTime);
 
             //移動ベクトルを設定
-            dir *= Owner._moveSpeed;
+            var speed = Owner._lookType == LookType.Follow? Owner._moveSpeed : Owner._peekMoveSpeed;
+            dir *= speed;
             dir.y = Owner._rb.velocity.y;
             Owner._rb.velocity = dir;
         }
@@ -313,4 +389,7 @@ public partial class PlayerController : MonoBehaviour
             return hit;
         }
     }
+    #endregion
+
+    #endregion
 }

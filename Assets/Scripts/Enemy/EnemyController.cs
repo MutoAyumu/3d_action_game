@@ -57,7 +57,7 @@ public partial class EnemyController : MonoBehaviour, IDamage
     private void Start()
     {
         _markSprite.enabled = false;
-        _bulletLine.SetActive(false);
+        _bulletLine.SetEnabled(false);
         _currentHP = _maxHP;
 
         _statePattern = new StatePatternBase<EnemyController>(this);
@@ -210,7 +210,7 @@ public partial class EnemyController : MonoBehaviour, IDamage
     {
         public override void OnUpdate()
         {
-            if (!Owner._targetTransform)
+            if (Owner._targetTransform)
             {
                 StatePattern.ChangeState((int)StateType.Shot);
             }
@@ -224,7 +224,7 @@ public partial class EnemyController : MonoBehaviour, IDamage
         public override void OnEnter()
         {
             _changeTimer = 0;
-            Owner._bulletLine.SetActive(true);
+            Owner._bulletLine.SetEnabled(true);
         }
         public override void OnUpdate()
         {
@@ -241,7 +241,7 @@ public partial class EnemyController : MonoBehaviour, IDamage
         }
         public override void OnExit()
         {
-            Owner._bulletLine.SetActive(false);
+            Owner._bulletLine.SetEnabled(false);
         }
 
         void Shot()
